@@ -14,8 +14,7 @@ public class LightTriger : MonoBehaviour
     {
         light1.SetActive(false);
         light2.SetActive(false);
-        BossLight1.SetActive(false);
-        BossLight2.SetActive(false);
+       
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -23,8 +22,7 @@ public class LightTriger : MonoBehaviour
         {
             light1.SetActive(true); 
             light2.SetActive(true);
-            BossLight1.SetActive(true);
-            BossLight2.SetActive(true);
+      
 
         }
     }
