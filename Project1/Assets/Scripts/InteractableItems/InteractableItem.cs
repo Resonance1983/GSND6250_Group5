@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class InteractableItems : MonoBehaviour
 {
-    [SerializeField] private bool isShowTips = true;
     [SerializeField] private GameObject InteractionTips;
 
     void Start()
@@ -25,7 +24,7 @@ public class InteractableItems : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player") && isShowTips==true)
+        if (other.gameObject.tag.Equals("Player"))
         {
             InteractionTips.SetActive(true);
         }
@@ -35,7 +34,7 @@ public class InteractableItems : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player") && isShowTips==true)
+        if (other.gameObject.tag.Equals("Player"))
         {
             InteractionTips.SetActive(false);
         }
