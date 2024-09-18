@@ -36,8 +36,8 @@ public class CharacterMovement : Singleton<CharacterMovement>
     // Setting_Jump
     [SerializeField] private Boolean AllowedJump = false;
     [SerializeField] private Boolean AllowedJumpInAir = false;
-    [Range(500,1000)]
-    public float JumpForce = 600;
+    [Range(0,100)]
+    public float JumpForce = 50;
     private int JumpTimes = 0;
 
     void FixedUpdate() {
