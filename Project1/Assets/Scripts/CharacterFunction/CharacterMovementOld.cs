@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Tools;
 using UnityEditor.Search;
 using UnityEngine;
 
-public class CharacterMovement : Singleton<CharacterMovement>
+public class CharacterMovementOld : Singleton<CharacterMovementOld>
 {
     //Setting_Basic
     public Rigidbody PlayerRb;
@@ -22,8 +22,8 @@ public class CharacterMovement : Singleton<CharacterMovement>
     // Setting_Jump
     [SerializeField] private Boolean AllowedJump = true;
     [SerializeField] private Boolean AllowedJumpInAir = false;
-    [Range(0,100)]
-    public float JumpForce = 50;
+    [Range(500,1000)]
+    public float JumpForce = 600;
     private int JumpTimes = 0;
 
     void FixedUpdate()
