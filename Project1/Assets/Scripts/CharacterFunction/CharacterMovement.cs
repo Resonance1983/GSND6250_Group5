@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Tools;
-using UnityEditor.Search;
 using UnityEngine;
 
 public class CharacterMovement : Singleton<CharacterMovement>
