@@ -1,32 +1,48 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class InteractableItems : MonoBehaviour
+public class InteractableItem : MonoBehaviour
 {
-    [SerializeField] private GameObject InteractionTips;
+    [SerializeField] private bool isNeedInteractionTips = true;
+    [SerializeField] private GameObject interactionTips;
+    public string tipsContent = "Press 'F' ";
+    [SerializeField] private KeyCode keyCode = KeyCode.F;
 
     void Start()
     {
-        if (InteractionTips == null)
+        // check variable legality
+        if (isNeedInteractionTips && interactionTips == null)
         {
-            InteractionTips = GameObject.Find("InteractionTips");
-            print("Please Give the 'InteractionTips' to this gameobject: " + gameObject.name);
+            interactionTips = GameObject.Find("InteractionTips");
+            print("Please Give the 'InteractionTips' to this gameObject: " + gameObject.name);
         }
+
+        // fill the corresponding text content
+        if (interactionTips.GetComponent<TextMeshProUGUI>())
+            interactionTips.GetComponent<TextMeshProUGUI>().text = tipsContent;
+        else if (interactionTips.GetComponent<Text>())
+            interactionTips.GetComponent<Text>().text = tipsContent;
 
     }
     
     // virtual method for interactable item
     public virtual void InteractableItemOnTriggerEnter() {}
     public virtual void InteractableItemOnTriggerExit() {}
+    public virtual void AfterPressInteract() {}
 
+    private void Update()
+    {
+        if (Input.GetKey(keyCode))
+            AfterPressInteract();
+    }
 
+    // Enter Trigger appear interaction tips, and exit to vanish it
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (isNeedInteractionTips && other.gameObject.tag.Equals("Player"))
         {
-            InteractionTips.SetActive(true);
+            interactionTips.SetActive(true);
         }
 
         InteractableItemOnTriggerEnter();
@@ -34,9 +50,9 @@ public class InteractableItems : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (isNeedInteractionTips && other.gameObject.tag.Equals("Player"))
         {
-            InteractionTips.SetActive(false);
+            interactionTips.SetActive(false);
         }
         
         InteractableItemOnTriggerExit();

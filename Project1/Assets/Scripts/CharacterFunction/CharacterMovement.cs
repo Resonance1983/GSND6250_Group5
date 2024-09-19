@@ -2,49 +2,53 @@
 using Tools;
 using UnityEngine;
 
+// To-do list
+// 空间音频
+
+
 public class CharacterMovement : Singleton<CharacterMovement>
 {
-    //Setting_Basic
-    [SerializeField] private Rigidbody PlayerRb;
-    [SerializeField] private Transform CameraForwardTransform;
+    // BasicSetting
+    [SerializeField] private Rigidbody playerRb;
+    [SerializeField] private Transform cameraForwardTransform;
+    [Range(0,1)]
+    public float frictionFactor = 0.5f;
+    [Range(0,20)]
+    public float gravityFactor = 9.8f;
+    private bool isOnGround = true;
     
     // BasicSetting_Walk/Run
-    public Boolean AllowedRun = true;
-    [Range(0,20)]
-    public float WalkForce = 3;
-    [Range(0,30)]
-    public float RunForce = 5;
-    private Boolean isRunning = false;
+    public bool allowedRun = true;
+    private bool isRunning = false;
     
-    //AdvancedSetting_Walk/Run
-    [Tooltip("If you have used Physic Material for Ground, please don't use it")]
+    // AdvancedSetting_Walk/Run
     public bool isUsingLinearDrag = true;
-    [Range(0,3)]
-    public float LinearDrag = 0.5f;
-    [Range(0,10)]
-    public float Acceleration_Walk = 5;
+    [Range(0,0.1f)]
+    public float linearDragFactor = 0.05f;
     [Range(0,20)]
-    public float Acceleration_Run = 8f;
-    [Range(0,20)]
-    public float MaxSpeed_Walk = 8;
+    public float acceleration_walk = 8;
     [Range(0,30)]
-    public float MaxSpeed_Run = 12;
+    public float acceleration_run = 12;
+    [Range(0,50)]
+    public float maxSpeed_walk = 8;
+    [Range(0,100)]
+    public float maxSpeed_run = 12;
 
     // Setting_Jump
-    [SerializeField] private Boolean AllowedJump = false;
-    [SerializeField] private Boolean AllowedJumpInAir = false;
-    [Range(500,1000)]
-    public float JumpForce = 600;
+    [SerializeField] private bool AllowedJump = true;
+    [SerializeField] private bool AllowedJumpTwice = true;
+    [Range(0,100)]
+    public float acceleration_Jump = 5;
     private int JumpTimes = 0;
 
     void FixedUpdate() {
         
         // Walk/Run Direction with camera
-        var forward = CameraForwardTransform.forward;
+        var forward = cameraForwardTransform.forward;
         forward.y = 0;
         forward.Normalize();
 
-        var right = CameraForwardTransform.right;
+        var right = cameraForwardTransform.right;
         right.y = 0;
         right.Normalize();
 
@@ -56,43 +60,50 @@ public class CharacterMovement : Singleton<CharacterMovement>
             movVec = movVec.normalized;
         
         
-        //Walk/Run Limitation Physical Rule
-        float playerSpeed = PlayerRb.velocity.magnitude;
+        // Walk/Run Physical Rule
         
-        // MaxSpeed
-        if (Mathf.Abs(playerSpeed) > MaxSpeed_Walk)
-            PlayerRb.velocity = PlayerRb.velocity.normalized * (isRunning?MaxSpeed_Walk:MaxSpeed_Run);
-        // Acceleration
-        PlayerRb.AddForce(movVec * (isRunning?WalkForce:RunForce) * (isRunning?Acceleration_Walk:Acceleration_Run));
-        //LinearDrag(Friction)
+        // MaxSpeed,Acceleration
+        float playerSpeed = playerRb.velocity.magnitude;
+        if (Mathf.Abs(playerSpeed) > (isRunning?maxSpeed_run:maxSpeed_walk))
+            playerRb.velocity = playerRb.velocity.normalized * (isRunning?maxSpeed_run:maxSpeed_walk);
+        if (movVec.magnitude > 0.3f)
+            playerRb.AddForce(movVec * playerRb.mass * (isRunning ? acceleration_run : acceleration_walk));
+        
+        // Friction
+        if (isOnGround && movVec.magnitude < 0.3f)
+            playerRb.AddForce(playerRb.velocity.normalized * -1 * playerRb.mass * gravityFactor * frictionFactor);
+        
+        
+        // LinearDrag is only for atmospheric drag
         if (isUsingLinearDrag) {
-            if (movVec.magnitude < 0.3f)
-                PlayerRb.drag = LinearDrag;
+            if (movVec.magnitude > 0.3f)
+                playerRb.drag = linearDragFactor * playerRb.mass;
             else
-                PlayerRb.drag = 0;
+                playerRb.drag = 0;
         }
         
     }
 
     private void Update() {
         // Switch Walk/Run
-        if (AllowedRun && Input.GetKey(KeyCode.LeftShift)) isRunning = !isRunning;
+        if (allowedRun && Input.GetKey(KeyCode.LeftShift)) isRunning = !isRunning;
         
         // Jump
         if (Input.GetButtonDown("Jump")) {
-            if (AllowedJump && (JumpTimes==0 || (JumpTimes==1 && AllowedJumpInAir))) {
+            if (AllowedJump && (JumpTimes==0 || (JumpTimes==1 && AllowedJumpTwice))) {
                 print("Jumping");
-                PlayerRb.AddForce(JumpForce*new Vector3(0,1,0),ForceMode.Impulse);
+                playerRb.AddForce(new Vector3(0,1,0) * playerRb.mass * acceleration_Jump,ForceMode.Impulse);
                 JumpTimes += 1;
+                isOnGround = false;
             }
         }
         
     }
 
     private void OnCollisionEnter(Collision other) {
-        //Reset JumpTimes
         if (other.gameObject.tag.Equals("Ground")) {
             JumpTimes = 0;
+            isOnGround = true;
         }
     }
     
