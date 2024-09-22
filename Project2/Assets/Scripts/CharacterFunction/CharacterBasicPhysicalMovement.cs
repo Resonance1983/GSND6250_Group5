@@ -6,7 +6,7 @@ using UnityEngine;
 // 空间音频
 
 
-public class CharacterMovement : Singleton<CharacterMovement>
+public class CharacterBasicPhysicalMovement : Singleton<CharacterBasicPhysicalMovement>
 {
     // BasicSetting
     [SerializeField] private Rigidbody playerRb;

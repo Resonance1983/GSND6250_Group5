@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class InteractableItem : MonoBehaviour
 {
     [SerializeField] private bool isNeedInteractionTips = true;
-    [SerializeField] private GameObject interactionTips;
+    [SerializeField] private GameObject interactionTips = null;
     public string tipsContent = "Press 'F' ";
     [SerializeField] private KeyCode keyCode = KeyCode.F;
 
@@ -18,11 +18,14 @@ public class InteractableItem : MonoBehaviour
             print("Please Give the 'InteractionTips' to this gameObject: " + gameObject.name);
         }
 
-        // fill the corresponding text content
-        if (interactionTips.GetComponent<TextMeshProUGUI>())
-            interactionTips.GetComponent<TextMeshProUGUI>().text = tipsContent;
-        else if (interactionTips.GetComponent<Text>())
-            interactionTips.GetComponent<Text>().text = tipsContent;
+        // correct the corresponding text content
+        if (isNeedInteractionTips)
+        {
+            if (interactionTips.GetComponent<TextMeshProUGUI>())
+                interactionTips.GetComponent<TextMeshProUGUI>().text = tipsContent;
+            else if (interactionTips.GetComponent<Text>())
+                interactionTips.GetComponent<Text>().text = tipsContent;
+        }
 
     }
     
