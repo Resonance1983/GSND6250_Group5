@@ -1,12 +1,7 @@
-﻿using System;
-using Tools;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 
-// To-do list
-// 空间音频
-
-
-public class CharacterBasicPhysicalMovement : Singleton<CharacterBasicPhysicalMovement>
+public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhysicalMovement>
 {
     // BasicSetting
     [SerializeField] private Rigidbody playerRb;
@@ -33,6 +28,9 @@ public class CharacterBasicPhysicalMovement : Singleton<CharacterBasicPhysicalMo
     public float maxSpeed_walk = 8;
     [Range(0,100)]
     public float maxSpeed_run = 12;
+    private bool isCancelMaxSpeed = false;
+
+    public void setIsCancelMaxSpeed(bool setBool) { isCancelMaxSpeed = setBool; }
 
     // Setting_Jump
     [SerializeField] private bool AllowedJump = true;
@@ -64,7 +62,7 @@ public class CharacterBasicPhysicalMovement : Singleton<CharacterBasicPhysicalMo
         
         // MaxSpeed,Acceleration
         float playerSpeed = playerRb.velocity.magnitude;
-        if (Mathf.Abs(playerSpeed) > (isRunning?maxSpeed_run:maxSpeed_walk))
+        if (Mathf.Abs(playerSpeed) > (isRunning?maxSpeed_run:maxSpeed_walk) && !isCancelMaxSpeed)
             playerRb.velocity = playerRb.velocity.normalized * (isRunning?maxSpeed_run:maxSpeed_walk);
         if (movVec.magnitude > 0.3f)
             playerRb.AddForce(movVec * playerRb.mass * (isRunning ? acceleration_run : acceleration_walk));
@@ -106,5 +104,6 @@ public class CharacterBasicPhysicalMovement : Singleton<CharacterBasicPhysicalMo
             isOnGround = true;
         }
     }
+    
     
 }

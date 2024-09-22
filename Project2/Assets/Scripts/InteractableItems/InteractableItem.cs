@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Collider))]
 public class InteractableItem : MonoBehaviour
 {
     [SerializeField] private bool isNeedInteractionTips = true;
@@ -30,8 +31,8 @@ public class InteractableItem : MonoBehaviour
     }
     
     // virtual method for interactable item
-    public virtual void InteractableItemOnTriggerEnter() {}
-    public virtual void InteractableItemOnTriggerExit() {}
+    public virtual void InteractableItemOnTriggerEnter(Collider other) {}
+    public virtual void InteractableItemOnTriggerExit(Collider other) {}
     public virtual void AfterPressInteract() {}
 
     private void Update()
@@ -48,7 +49,7 @@ public class InteractableItem : MonoBehaviour
             interactionTips.SetActive(true);
         }
 
-        InteractableItemOnTriggerEnter();
+        InteractableItemOnTriggerEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
@@ -58,7 +59,7 @@ public class InteractableItem : MonoBehaviour
             interactionTips.SetActive(false);
         }
         
-        InteractableItemOnTriggerExit();
+        InteractableItemOnTriggerExit(other);
 
     }
     
