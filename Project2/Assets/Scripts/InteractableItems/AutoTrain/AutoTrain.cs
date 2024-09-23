@@ -1,9 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class AutoTrain : InteractableItem
 {
     public Animator doorAnimator;
     public Animator trainAnimator;
+    public AudioSource audioSource;
     
     private bool once = false;
 
@@ -30,11 +32,18 @@ public class AutoTrain : InteractableItem
         
     }
 
-    public void cancelConnectRbForAnimationEvent()
-    {
+    public void cancelConnectRbForAnimationEvent() {
         GameObject player = GameObject.Find("Player");
+        audioSource.Stop();
         player.GetComponent<CharacterMovement_TrackMomentum>().connectRb = null;
         player.GetComponent<CharacterBasicPhysicalMovement>().setIsCancelMaxSpeed(true);
     }
+
+    public void weakTrainSound()
+    {
+        print("WeakingTrainSound");
+        StartCoroutine(GameObject.Find("SoundManager").GetComponent<SoundManager>().WeakSound(audioSource, 1, 0, 0.05f));
+    }
+    
 
 }

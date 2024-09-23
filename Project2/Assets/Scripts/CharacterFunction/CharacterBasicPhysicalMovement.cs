@@ -12,6 +12,7 @@ public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhys
     public float gravityFactor = 9.8f;
     private bool isOnGround = true;
     
+
     // BasicSetting_Walk/Run
     public bool allowedRun = true;
     private bool isRunning = false;
@@ -28,8 +29,7 @@ public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhys
     public float maxSpeed_walk = 8;
     [Range(0,100)]
     public float maxSpeed_run = 12;
-    private bool isCancelMaxSpeed = false;
-
+    
     public void setIsCancelMaxSpeed(bool setBool) { isCancelMaxSpeed = setBool; }
 
     // Setting_Jump
@@ -38,6 +38,12 @@ public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhys
     [Range(0,100)]
     public float acceleration_Jump = 5;
     private int JumpTimes = 0;
+    
+    // Interface external value for script
+    private bool isCancelMaxSpeed = false;
+    public bool isMoving = false;
+    
+    
 
     void FixedUpdate() {
         
@@ -64,8 +70,12 @@ public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhys
         float playerSpeed = playerRb.velocity.magnitude;
         if (Mathf.Abs(playerSpeed) > (isRunning?maxSpeed_run:maxSpeed_walk) && !isCancelMaxSpeed)
             playerRb.velocity = playerRb.velocity.normalized * (isRunning?maxSpeed_run:maxSpeed_walk);
-        if (movVec.magnitude > 0.3f)
+        if (movVec.magnitude > 0.2f)
+        {
             playerRb.AddForce(movVec * playerRb.mass * (isRunning ? acceleration_run : acceleration_walk));
+            isMoving = true;
+        }else
+            isMoving = false;
         
         // Friction
         if (isOnGround && movVec.magnitude < 0.3f)
