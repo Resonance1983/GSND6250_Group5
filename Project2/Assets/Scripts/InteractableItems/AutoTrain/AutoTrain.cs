@@ -40,10 +40,9 @@ public class AutoTrain : InteractableItem
         player.GetComponent<CharacterBasicPhysicalMovement>().setIsCancelMaxSpeed(true);
     }
 
-    public void weakTrainSound()
+    public void awakeTrainSound()
     {
-        print("WeakingTrainSound");
-        StartCoroutine(GameObject.Find("SoundManager").GetComponent<SoundManager>().WeakSound(audioSource, 0.5f, 0, 0.02f));
+        StartCoroutine(GameObject.Find("SoundManager").GetComponent<SoundManager>().AwakeSound(audioSource, 0.5f, 0, 0.02f));
     }
 
     public void nextScene()

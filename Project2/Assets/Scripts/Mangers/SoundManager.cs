@@ -19,7 +19,7 @@ public class SoundManager : Singleton<SoundManager>
             playerAudioSource.Pause();
     }
 
-    public IEnumerator WeakSound(AudioSource audioSource,float targetVolume,float startVolume, float speedPerPointSecond)
+    public IEnumerator AwakeSound(AudioSource audioSource,float targetVolume,float startVolume, float speedPerPointSecond)
     {
         audioSource.volume = startVolume;
         audioSource.Play(0);
@@ -30,4 +30,17 @@ public class SoundManager : Singleton<SoundManager>
         }
         
     }   
+    
+    public IEnumerator ExtinguishSound(AudioSource audioSource,float targetVolume,float startVolume, float speedPerPointSecond)
+    {
+        audioSource.volume = startVolume;
+        audioSource.Play(0);
+        while (audioSource.volume > targetVolume)
+        {
+            audioSource.volume -= speedPerPointSecond;
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+    }   
+    
 }
