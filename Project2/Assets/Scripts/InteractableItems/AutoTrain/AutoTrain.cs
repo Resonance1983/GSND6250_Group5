@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AutoTrain : InteractableItem
 {
@@ -42,8 +43,13 @@ public class AutoTrain : InteractableItem
     public void weakTrainSound()
     {
         print("WeakingTrainSound");
-        StartCoroutine(GameObject.Find("SoundManager").GetComponent<SoundManager>().WeakSound(audioSource, 1, 0, 0.05f));
+        StartCoroutine(GameObject.Find("SoundManager").GetComponent<SoundManager>().WeakSound(audioSource, 0.5f, 0, 0.02f));
     }
-    
+
+    public void nextScene()
+    {
+        SceneManager.LoadScene("FirstDraftscene");
+    }
+
 
 }
