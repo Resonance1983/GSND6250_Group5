@@ -144,7 +144,6 @@ GameObject:
   - component: {fileID: 4060434596472694782}
   - component: {fileID: 4351777799740769010}
   - component: {fileID: 6257162137416893816}
-  - component: {fileID: 3639793112790837214}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -408,19 +407,6 @@ MonoBehaviour:
   ysen: 1
   maxPitch: 100
   targetCamera: {fileID: 8630885659941810818}
---- !u!114 &3639793112790837214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7537547227932208476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a33853330fa4d79bc6f4535821719a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  connectRb: {fileID: 0}
 --- !u!1 &9099739874471535965
 GameObject:
   m_ObjectHideFlags: 0

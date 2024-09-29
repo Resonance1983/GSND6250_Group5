@@ -1,7 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-public class CharacterBasicPhysicalMovement : Tools.Singleton<CharacterBasicPhysicalMovement>
+public class CharacterPhysicalMovement : Tools.Singleton<CharacterPhysicalMovement>
 {
     // BasicSetting
     [SerializeField] private Rigidbody playerRb;

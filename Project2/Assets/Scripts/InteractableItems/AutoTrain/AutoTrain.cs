@@ -27,7 +27,7 @@ public class AutoTrain : InteractableItem
             doorAnimator.SetBool("IsOpenning", true);
             other.GetComponent<CharacterMovement_TrackMomentum>().connectRb =
                 gameObject.GetComponent<Rigidbody>();
-            other.GetComponent<CharacterBasicPhysicalMovement>().setIsCancelMaxSpeed(true);
+            other.GetComponent<CharacterPhysicalMovement>().setIsCancelMaxSpeed(true);
             once = !once;
         }
         
@@ -37,7 +37,7 @@ public class AutoTrain : InteractableItem
         GameObject player = GameObject.Find("Player");
         audioSource.Stop();
         player.GetComponent<CharacterMovement_TrackMomentum>().connectRb = null;
-        player.GetComponent<CharacterBasicPhysicalMovement>().setIsCancelMaxSpeed(true);
+        player.GetComponent<CharacterPhysicalMovement>().setIsCancelMaxSpeed(true);
     }
 
     public void awakeTrainSound()
