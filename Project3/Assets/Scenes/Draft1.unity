@@ -1815,6 +1815,94 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509673017}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &576602606
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4060434596472694782, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537547227932208476, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.71716
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.71716
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.71716
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -7.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990228910133468821, guid: 742784dc6e683da49945cf90ad8c89a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 742784dc6e683da49945cf90ad8c89a7, type: 3}
 --- !u!1 &621344301
 GameObject:
   m_ObjectHideFlags: 0
@@ -2673,7 +2761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &961739750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3384,7 +3472,7 @@ Transform:
   m_GameObject: {fileID: 1249120175}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7329797, z: -0, w: 0.6802505}
-  m_LocalPosition: {x: -3.17, y: -3.7517438, z: 33.86}
+  m_LocalPosition: {x: -3.17, y: -3.7517438, z: 33.61}
   m_LocalScale: {x: 6.2369347, y: 3, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4690,3 +4778,4 @@ SceneRoots:
   - {fileID: 1006892012}
   - {fileID: 1322572558}
   - {fileID: 440044054}
+  - {fileID: 576602606}
