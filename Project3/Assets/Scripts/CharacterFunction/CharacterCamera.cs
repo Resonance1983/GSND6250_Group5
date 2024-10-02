@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tools;
@@ -7,13 +8,26 @@ public class CharacterCamera : Singleton<CharacterCamera>
 {
 
     public float xsen = 1, ysen = 1;
+    public Transform targetCamera;
     [Range(0,180)]
     public float maxPitch = 60;
-    public Transform targetCamera;
-
     private float pitch = 0;
+     
+    public Texture2D cursorTex;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        if (cursorTex)
+        {
+            // para2: texture offset position
+            Cursor.SetCursor(cursorTex,Vector2.zero,CursorMode.Auto);
+        }
+        
+    }
+
+
     void Update()
     {
         var curEuler = targetCamera.localRotation.eulerAngles;
