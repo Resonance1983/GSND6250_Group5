@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class InteractableItem : MonoBehaviour
 {
     [SerializeField] private bool isNeedInteractionTips = true;
-    [SerializeField] private GameObject interactionTips = null;
+    [SerializeField] protected GameObject interactionTips = null;
     public string tipsContent = "Press 'F' ";
     [SerializeField] private KeyCode keyCode = KeyCode.F;
 
