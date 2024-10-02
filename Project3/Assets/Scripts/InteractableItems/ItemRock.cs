@@ -10,7 +10,6 @@ public class ItemRock : InteractableItem
         if (playerRayCast != null)
         {
             playerRayCast.isEnabled = true;
-            Debug.Log(playerRayCast.isEnabled);
         }
         
         interactionTips.SetActive(false);

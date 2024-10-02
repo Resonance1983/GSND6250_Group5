@@ -14,6 +14,7 @@ public class Trap : MonoBehaviour
             trapReceiver.GetComponent<NavMeshAgent>().speed *= 0.5f;
             Timer timer = Timer.createTimer("GameTime");
             timer.startTiming(10,true,trapTimerCompleted);
+            this.gameObject.SetActive(false);
         }
     }
 
