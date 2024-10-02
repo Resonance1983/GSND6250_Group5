@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - DestroyAvailable
+  - NPC
   layers:
   - Default
   - TransparentFX
