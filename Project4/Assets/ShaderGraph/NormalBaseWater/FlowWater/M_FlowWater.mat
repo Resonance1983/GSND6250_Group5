@@ -119,20 +119,20 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _Velocity_X: 0.2
+    - _Velocity_X: 0.51
     - _Velocity_Y: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _depth: 5
-    - _normalScale: 1
-    - _strength: 0.1
+    - _normalScale: 0.1
+    - _strength: 0.58
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Down_Color: {r: 0.12130647, g: 0.799057, b: 0.8867924, a: 0}
+    - _Down_Color: {r: 0.24705882, g: 0.47843137, b: 0.5019608, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Up_Color: {r: 0, g: 0.9608459, b: 1, a: 0}
+    - _Up_Color: {r: 0.3254902, g: 0.63529414, b: 0.6627451, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &71378061123401237
 MonoBehaviour:
