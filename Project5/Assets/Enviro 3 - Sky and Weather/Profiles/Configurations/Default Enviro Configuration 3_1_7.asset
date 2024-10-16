@@ -131,9 +131,9 @@ MonoBehaviour:
   preset: {fileID: 11400000, guid: 0fcdd472bd6a8ec429fc1e9bc978c4fa, type: 2}
   showCirrusCloudsControls: 0
   show2DCloudsControls: 0
-  cloudFlatBaseAnim: {x: 0.3219911, y: -0.44079727}
-  cloudFlatDetailAnim: {x: 0.9999762, y: 0.55352443}
-  cirrusAnim: {x: -0.8350484, y: 0.7702119}
+  cloudFlatBaseAnim: {x: 0.32685015, y: -0.44565633}
+  cloudFlatDetailAnim: {x: -0.9759548, y: 0.5292292}
+  cirrusAnim: {x: -0.8326188, y: 0.7677823}
 --- !u!114 &-5447272849285213076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1164,7 +1164,7 @@ MonoBehaviour:
   volumetricCloudModule: {fileID: 3171557369469055653}
   flatCloudModule: {fileID: -6856645797116724545}
   Weather: {fileID: 5286980405202375680}
-  Aurora: {fileID: 4011421771873438716}
+  Aurora: {fileID: 0}
   Audio: {fileID: -662796855879562952}
   Effects: {fileID: 70454876032145318}
   Lightning: {fileID: 8141577898218642580}
@@ -1964,7 +1964,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    temperature: -3.6143498
+    temperature: -3.862717
     temperatureWeatherMod: -10
     temperatureCustomMod: 0
     temperatureChangingSpeed: 0.1
@@ -2224,77 +2224,11 @@ MonoBehaviour:
   showDensityControls: 0
   showTextureControls: 0
   showWindControls: 0
-  cloudAnimLayer1: {x: -0.6818897, y: -0.4227304, z: -0.19607134}
+  cloudAnimLayer1: {x: -0.674601, y: -0.43001896, z: -0.23494367}
   cloudAnimLayer2: {x: -0.00770105, y: 0.00770105, z: -0.1232168}
   cloudAnimNonScaledLayer1: {x: 0.006009331, y: -0.006009331, z: -0.1001555}
   cloudAnimNonScaledLayer2: {x: -0.00200311, y: 0.00200311, z: -0.1001555}
   weatherMap: {fileID: 0}
---- !u!114 &4011421771873438716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6910768c241d1924f921a3f44198cfe1, type: 3}
-  m_Name: Aurora Module
-  m_EditorClassIdentifier: 
-  showModuleInspector: 0
-  showSaveLoad: 0
-  active: 1
-  Settings:
-    useAurora: 1
-    auroraIntensityModifier: 1
-    auroraIntensity:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.5
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    auroraColor: {r: 0.1, g: 0.5, b: 0.7, a: 1}
-    auroraBrightness: 75
-    auroraContrast: 10
-    auroraHeight: 20000
-    auroraScale: 0.01
-    auroraSteps: 24
-    auroraLayer1Settings: {x: 0.1, y: 0.1, z: 0, w: 0.5}
-    auroraLayer2Settings: {x: 5, y: 5, z: 0, w: 0.5}
-    auroraColorshiftSettings: {x: 0.05, y: 0.05, z: 0, w: 5}
-    auroraSpeed: 0.005
-    aurora_layer_1: {fileID: 2800000, guid: 3316634c3fa8231429eb988934de236c, type: 3}
-    aurora_layer_2: {fileID: 2800000, guid: 25bf6a8e18b4471499e961d75d1777c2, type: 3}
-    aurora_colorshift: {fileID: 2800000, guid: f99b7b1866c1ab3489d848a4ef3dd81b, type: 3}
-  preset: {fileID: 11400000, guid: 278933d28004c6b40ace276968b45b9e, type: 2}
-  showAuroraControls: 1
 --- !u!114 &5286980405202375680
 MonoBehaviour:
   m_ObjectHideFlags: 0
