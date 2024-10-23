@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -9,11 +10,12 @@ public class SceneTransition : MonoBehaviour
     public AnimationCurve fadeCurve;
     public Text transitionText;
     private Image blackScreen;
+    public String nextSceneName;
 
     void Start()
     {
         CreateBlackScreen();
-        StartCoroutine(FadeOut());
+        StartCoroutine(FadeIn());
     }
 
     void CreateBlackScreen()
@@ -55,7 +57,7 @@ public class SceneTransition : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
 
         // 跳转到下一个场景
-        SceneManager.LoadScene("NextSceneName"); // 替换为你的场景名称
+        SceneManager.LoadScene(nextSceneName); // 替换为你的场景名称
     }
     
     public IEnumerator FadeOut()

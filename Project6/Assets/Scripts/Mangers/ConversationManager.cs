@@ -59,7 +59,7 @@ public class ConversationManager : MonoBehaviour
 
     public IEnumerator showAllConversation()
     {
-        yield return StartCoroutine(showConversation(0, ConversationContent.Count));
+        yield return StartCoroutine(showConversation(0, ConversationContent.Count-1));
     }
 
 
