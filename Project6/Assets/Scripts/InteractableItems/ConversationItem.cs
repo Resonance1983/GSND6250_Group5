@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ConversationItem : InteractableItem
 {
-    [SerializeField] private ConversationManager cm;
+    [SerializeField] private ConversationManager conversationManager;
     
-    void AfterPressInteract()
+    public override void AfterPressInteract()
     {
-        StartCoroutine(cm.showAllConversation());
+        StartCoroutine(conversationManager.showAllConversation());
     }
 }

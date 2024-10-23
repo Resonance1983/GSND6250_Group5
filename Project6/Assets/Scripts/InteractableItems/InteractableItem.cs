@@ -7,8 +7,10 @@ public class InteractableItem : MonoBehaviour
 {
     [SerializeField] private bool isNeedInteractionTips = true;
     [SerializeField] protected GameObject interactionTips = null;
+    [HideInInspector]
     public string tipsContent = "Press 'F' ";
     [SerializeField] private KeyCode keyCode = KeyCode.F;
+    private bool isCollding = false;
 
     void Start()
     {
@@ -37,8 +39,12 @@ public class InteractableItem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(keyCode))
+        if (Input.GetKey(keyCode) && isCollding)
+        { 
+            print("AfterPressInteract");
             AfterPressInteract();
+        }
+        
     }
 
     // Enter Trigger appear interaction tips, and exit to vanish it
@@ -49,7 +55,10 @@ public class InteractableItem : MonoBehaviour
             interactionTips.SetActive(true);
         }
 
+        isCollding = true;
+        print(isCollding);
         InteractableItemOnTriggerEnter(other);
+        
     }
 
     private void OnTriggerExit(Collider other)
@@ -58,7 +67,8 @@ public class InteractableItem : MonoBehaviour
         {
             interactionTips.SetActive(false);
         }
-        
+
+        isCollding = false;
         InteractableItemOnTriggerExit(other);
 
     }
