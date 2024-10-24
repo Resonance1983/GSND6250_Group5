@@ -12,24 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cbac6e678443724c9bd2baf5d564c1d, type: 3}
   m_Name: Foggy
   m_EditorClassIdentifier: 
-  showEditor: 0
-  showEffectControls: 0
-  showCloudControls: 0
+  showEditor: 1
+  showEffectControls: 1
+  showCloudControls: 1
   showFlatCloudControls: 0
   showFogControls: 1
-  showSkyControls: 0
-  showLightingControls: 0
-  showAuroraControls: 0
-  showEnvironmentControls: 0
+  showSkyControls: 1
+  showLightingControls: 1
+  showAuroraControls: 1
+  showEnvironmentControls: 1
   showAudioControls: 0
   showAmbientAudioControls: 0
   showWeatherAudioControls: 0
-  showLightningControls: 0
+  showLightningControls: 1
   cloudsOverride:
     ambientLightIntensity: 1
     showLayer1: 1
-    coverageLayer1: 0.208
-    dilateCoverageLayer1: 0.836
+    coverageLayer1: 0.2
+    dilateCoverageLayer1: 0.331
     dilateTypeLayer1: 0.479
     typeModifierLayer1: 0.095
     anvilBiasLayer1: 0.228
@@ -41,7 +41,7 @@ MonoBehaviour:
     silverLiningSpreadLayer1: 0.8
     ligthAbsorbtionLayer1: 0.739
     densityLayer1: 0.234
-    densitySmoothnessLayer1: 1.281
+    densitySmoothnessLayer1: 1.04
     baseErosionIntensityLayer1: 0.148
     detailErosionIntensityLayer1: 0.335
     curlIntensityLayer1: 0.414
@@ -73,23 +73,24 @@ MonoBehaviour:
     flatCloudsAmbientIntensity: 1
     flatCloudsAbsorbtion: 0.6
   lightingOverride:
-    directLightIntensityModifier: 1
-    ambientIntensityModifier: 1
+    directLightIntensityModifier: 0.1
+    ambientIntensityModifier: 0.14
+    shadowIntensity: 0.723
   skyOverride:
     intensity: 1
     skyColorTint: {r: 1, g: 1, b: 1, a: 1}
   fogOverride:
-    fogDensity: 0.142
-    fogHeightFalloff: 0.0034
+    fogDensity: 0.029
+    fogHeightFalloff: 0.0026
     fogHeight: 0
-    fogDensity2: 0.651
+    fogDensity2: 0.046
     fogHeightFalloff2: 0.0469
     fogHeight2: 0
     fogColorBlend: 0.75
     fogColorMod: {r: 1, g: 1, b: 1, a: 1}
-    scattering: 0.461
-    extinction: 0.046
-    anistropy: 0.3
+    scattering: 0.2
+    extinction: 0.09
+    anistropy: 0.151
     unityFogDensity: 0.002
     unityFogStartDistance: 0
     unityFogEndDistance: 1000
@@ -104,10 +105,10 @@ MonoBehaviour:
     lightningStorm: 0
     randomLightningDelay: 1
   environmentOverride:
-    temperatureWeatherMod: 0
+    temperatureWeatherMod: -6.4
     wetnessTarget: 0
     snowTarget: 0
     windDirectionX: 1
     windDirectionY: -1
-    windSpeed: 0.25
+    windSpeed: 0.85
     windTurbulence: 0.25
