@@ -11,6 +11,7 @@ public class SceneTransition : MonoBehaviour
     public Text transitionText;
     private Image blackScreen;
     public String nextSceneName;
+    public String nextWeatherName;
 
     void Start()
     {
@@ -56,8 +57,10 @@ public class SceneTransition : MonoBehaviour
         // 等待3秒
         yield return new WaitForSeconds(3.0f);
 
-        // 跳转到下一个场景
-        SceneManager.LoadScene(nextSceneName); // 替换为你的场景名称
+        // 跳转到下一个场景并更换天气
+        SceneManager.LoadScene(nextSceneName);
+        Enviro.EnviroManager.instance.Weather.ChangeWeather(nextWeatherName);
+        
     }
     
     public IEnumerator FadeOut()
