@@ -12,16 +12,16 @@ namespace LostFrame
         // Setting_Walk/Run
         [SerializeField] private bool AllowedRun = true;
         public float WalkForce = 30;
-        [ConditionalHide("AllowedRun",true)]
-        public float RunForce = 60;
+        [ConditionalHide("AllowedRun", true)] public float RunForce = 60;
         private bool isRunning = false;
 
         // Setting_Jump
         [SerializeField] private bool AllowedJump = true;
-        [SerializeField] [ConditionalHide("AllowedJump",true)]
+
+        [SerializeField] [ConditionalHide("AllowedJump", true)]
         private bool AllowedJumpInAir = false;
-        [ConditionalHide("AllowedJump",true)]
-        public float JumpForce = 60;
+
+        [ConditionalHide("AllowedJump", true)] public float JumpForce = 60;
         private int JumpTimes = 0;
 
         private void FixedUpdate()

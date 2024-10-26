@@ -6,16 +6,16 @@ using UnityEditorInternal;
 
 namespace Enviro
 {
-    [CustomEditor(typeof(Enviro.EnviroReflectionProbe))]
-    public class EnviroReflectionProbeEditor : Editor {
+    [CustomEditor(typeof(EnviroReflectionProbe))]
+    public class EnviroReflectionProbeEditor : Editor
+    {
+        private GUIStyle boxStyle;
+        private GUIStyle boxStyleModified;
+        private GUIStyle wrapStyle;
+        private GUIStyle wrapStyle2;
+        private GUIStyle clearStyle;
 
-        GUIStyle boxStyle;
-        GUIStyle boxStyleModified;
-        GUIStyle wrapStyle;
-        GUIStyle wrapStyle2;
-        GUIStyle clearStyle;
-
-        Enviro.EnviroReflectionProbe myTarget;
+        private EnviroReflectionProbe myTarget;
 
         public bool showAudio = false;
         public bool showFog = false;
@@ -27,19 +27,19 @@ namespace Enviro
 
         private Color boxColor1;
 
-        SerializedObject serializedObj;
+        private SerializedObject serializedObj;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            myTarget = (Enviro.EnviroReflectionProbe)target;
-            serializedObj = new SerializedObject (myTarget);
-            boxColor1 = new Color(0.95f, 0.95f, 0.95f,1f);
+            myTarget = (EnviroReflectionProbe)target;
+            serializedObj = new SerializedObject(myTarget);
+            boxColor1 = new Color(0.95f, 0.95f, 0.95f, 1f);
         }
 
-        public override void OnInspectorGUI ()
+        public override void OnInspectorGUI()
         {
-            myTarget = (Enviro.EnviroReflectionProbe)target;
-            serializedObj.UpdateIfRequiredOrScript ();
+            myTarget = (EnviroReflectionProbe)target;
+            serializedObj.UpdateIfRequiredOrScript();
 
             //Set up the box style
             if (boxStyle == null)
@@ -74,7 +74,8 @@ namespace Enviro
                 wrapStyle2.wordWrap = true;
             }
 
-            if (clearStyle == null) {
+            if (clearStyle == null)
+            {
                 clearStyle = new GUIStyle(GUI.skin.label);
                 clearStyle.normal.textColor = GUI.skin.label.normal.textColor;
                 clearStyle.fontStyle = FontStyle.Bold;
@@ -88,19 +89,23 @@ namespace Enviro
             GUILayout.BeginVertical("Information", boxStyleModified);
             GUI.backgroundColor = Color.white;
             GUILayout.Space(20);
-            EditorGUILayout.LabelField("Use this component to update your realtime reflection probes with Enviro Sky. You also can enable the 'Custom Rendering' to have enviro effects in your reflection probes!", wrapStyle2);
-            EditorGUILayout.LabelField("Please enable 'Standalone Probe' if you use this component on your own places reflection probes.", wrapStyle2);      
+            EditorGUILayout.LabelField(
+                "Use this component to update your realtime reflection probes with Enviro Sky. You also can enable the 'Custom Rendering' to have enviro effects in your reflection probes!",
+                wrapStyle2);
+            EditorGUILayout.LabelField(
+                "Please enable 'Standalone Probe' if you use this component on your own places reflection probes.",
+                wrapStyle2);
             GUILayout.EndVertical();
             GUI.backgroundColor = boxColor1;
             GUILayout.BeginVertical("Setup", boxStyleModified);
             GUI.backgroundColor = Color.white;
             GUILayout.Space(20);
             myTarget.standalone = EditorGUILayout.Toggle("Standalone Probe", myTarget.standalone);
-        
+
             if (myTarget.standalone)
             {
                 GUILayout.Space(10);
-    #if ENVIRO_HD
+#if ENVIRO_HD
                 GUI.backgroundColor = boxColor1;
                 GUILayout.BeginVertical("Enviro Effects Rendering", boxStyleModified);
                 GUI.backgroundColor = Color.white;
@@ -117,22 +122,22 @@ namespace Enviro
                     }
                 }
                 GUILayout.EndVertical();
-    #endif
+#endif
                 GUI.backgroundColor = boxColor1;
                 GUILayout.BeginVertical("Update Settings", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 GUILayout.Space(20);
-            myTarget.reflectionsUpdateTreshhold = EditorGUILayout.FloatField("Update Treshold in GameTime Hours", myTarget.reflectionsUpdateTreshhold);
-            if (myTarget.customRendering)
-            {
-                myTarget.useTimeSlicing = EditorGUILayout.Toggle("Use Time-Slicing", myTarget.useTimeSlicing);
+                myTarget.reflectionsUpdateTreshhold = EditorGUILayout.FloatField("Update Treshold in GameTime Hours",
+                    myTarget.reflectionsUpdateTreshhold);
+                if (myTarget.customRendering)
+                    myTarget.useTimeSlicing = EditorGUILayout.Toggle("Use Time-Slicing", myTarget.useTimeSlicing);
+                GUILayout.EndVertical();
             }
-            GUILayout.EndVertical();
-            }
+
             GUILayout.EndVertical();
             // END
-            EditorGUILayout.EndVertical ();
-            EditorUtility.SetDirty (target);
+            EditorGUILayout.EndVertical();
+            EditorUtility.SetDirty(target);
         }
     }
 }

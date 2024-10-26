@@ -5,12 +5,13 @@ using UnityEngine;
 namespace Enviro
 {
     public static class EnviroHelper
-    { 
+    {
         public static string assetPath = "Assets/Enviro 3 - Sky and Weather";
-        public static Vector3 PingPong (Vector3 value)
+
+        public static Vector3 PingPong(Vector3 value)
         {
-            Vector3 result = value;
-    
+            var result = value;
+
             if (result.x > 1f)
                 result.x = -1f;
             else if (result.x < -1f)
@@ -29,10 +30,10 @@ namespace Enviro
             return result;
         }
 
-        public static Vector2 PingPong (Vector2 value)
+        public static Vector2 PingPong(Vector2 value)
         {
-            Vector2 result = value;
-    
+            var result = value;
+
             if (result.x > 1f)
                 result.x = -1f;
             else if (result.x < -1f)
@@ -42,7 +43,7 @@ namespace Enviro
                 result.y = -1f;
             else if (result.y < -1f)
                 result.y = 1f;
-                
+
             return result;
         }
 
@@ -52,26 +53,25 @@ namespace Enviro
         }
 
         // Checks if Enviro Effects should render on this camera for URP/HDRP
-        public static bool CanRenderOnCamera (Camera cam)
+        public static bool CanRenderOnCamera(Camera cam)
         {
-            if(EnviroManager.instance != null)
-            { 
+            if (EnviroManager.instance != null)
+            {
                 //if (cam.hideFlags != HideFlags.None) return true;
 
-                if(cam.cameraType == CameraType.SceneView || cam.cameraType == CameraType.Reflection)
-                   return true;
+                if (cam.cameraType == CameraType.SceneView || cam.cameraType == CameraType.Reflection)
+                    return true;
 
-                if(cam == EnviroManager.instance.Camera)
-                   return true;
+                if (cam == EnviroManager.instance.Camera)
+                    return true;
 
-                if(EnviroManager.instance.Objects.globalReflectionProbe != null && cam == EnviroManager.instance.Objects.globalReflectionProbe.renderCam)
-                   return true;
+                if (EnviroManager.instance.Objects.globalReflectionProbe != null &&
+                    cam == EnviroManager.instance.Objects.globalReflectionProbe.renderCam)
+                    return true;
 
-                for (int i = 0; i < EnviroManager.instance.Cameras.Count; i++)
-                {
-                    if(cam == EnviroManager.instance.Cameras[i].camera)
-                       return true;
-                }
+                for (var i = 0; i < EnviroManager.instance.Cameras.Count; i++)
+                    if (cam == EnviroManager.instance.Cameras[i].camera)
+                        return true;
 
                 return false;
             }
@@ -82,44 +82,44 @@ namespace Enviro
         }
 
         ///Get the Light component from Enviro Directional light if lighting module is activated or any other active directional light
-        public static Light GetDirectionalLight ()
+        public static Light GetDirectionalLight()
         {
             Light result = null;
 
-            if(EnviroManager.instance.Lighting != null)
+            if (EnviroManager.instance.Lighting != null)
             {
-                if(EnviroManager.instance.Lighting.Settings.lightingMode == EnviroLighting.LightingMode.Single)
+                if (EnviroManager.instance.Lighting.Settings.lightingMode == EnviroLighting.LightingMode.Single)
                 {
-                    if(EnviroManager.instance.Objects.directionalLight != null)
-                       result = EnviroManager.instance.Objects.directionalLight;
+                    if (EnviroManager.instance.Objects.directionalLight != null)
+                        result = EnviroManager.instance.Objects.directionalLight;
                 }
                 else
                 {
-                    if(!EnviroManager.instance.isNight)
+                    if (!EnviroManager.instance.isNight)
                     {
-                        if(EnviroManager.instance.Objects.directionalLight != null)
-                           result = EnviroManager.instance.Objects.directionalLight;
+                        if (EnviroManager.instance.Objects.directionalLight != null)
+                            result = EnviroManager.instance.Objects.directionalLight;
                     }
                     else
                     {
-                        if(EnviroManager.instance.Objects.additionalDirectionalLight != null)
-                           result = EnviroManager.instance.Objects.additionalDirectionalLight;
+                        if (EnviroManager.instance.Objects.additionalDirectionalLight != null)
+                            result = EnviroManager.instance.Objects.additionalDirectionalLight;
                     }
                 }
             }
             else
             {
                 //Find other Directional Lights in scene
-                Light[] results = GameObject.FindObjectsOfType<Light>();
-                for(int i = 0; i < results.Length; i++)
-                {
-                    if(results[i].type == LightType.Directional && results[i].gameObject.activeSelf && results[i].enabled)
-                        {
-                            result = results[i];
-                            break;
-                        }
-                }
+                var results = Object.FindObjectsOfType<Light>();
+                for (var i = 0; i < results.Length; i++)
+                    if (results[i].type == LightType.Directional && results[i].gameObject.activeSelf &&
+                        results[i].enabled)
+                    {
+                        result = results[i];
+                        break;
+                    }
             }
+
             return result;
         }
 
@@ -129,7 +129,7 @@ namespace Enviro
             if (buffer != null && buffer.count == count)
                 return;
 
-            if(buffer != null)
+            if (buffer != null)
             {
                 buffer.Release();
                 buffer = null;
@@ -140,11 +140,12 @@ namespace Enviro
 
             buffer = new ComputeBuffer(count, stride);
         }
+
         public static void ReleaseComputeBuffer(ref ComputeBuffer buffer)
         {
-            if(buffer != null)
+            if (buffer != null)
                 buffer.Release();
-                
+
             buffer = null;
         }
 
@@ -159,12 +160,14 @@ namespace Enviro
             if (camera == null)
                 return Vector4.zero;
 
-            float oneExtentY = camera.orthographic ? camera.orthographicSize : Mathf.Tan(0.5f * Mathf.Deg2Rad * camera.fieldOfView);
-            float oneExtentX = oneExtentY * camera.aspect;
-            float texelSizeX = oneExtentX / (0.5f * camera.pixelWidth);
-            float texelSizeY = oneExtentY / (0.5f * camera.pixelHeight);
-            float oneJitterX = texelSizeX * texelOffsetX;
-            float oneJitterY = texelSizeY * texelOffsetY;
+            var oneExtentY = camera.orthographic
+                ? camera.orthographicSize
+                : Mathf.Tan(0.5f * Mathf.Deg2Rad * camera.fieldOfView);
+            var oneExtentX = oneExtentY * camera.aspect;
+            var texelSizeX = oneExtentX / (0.5f * camera.pixelWidth);
+            var texelSizeY = oneExtentY / (0.5f * camera.pixelHeight);
+            var oneJitterX = texelSizeX * texelOffsetX;
+            var oneJitterY = texelSizeY * texelOffsetY;
 
             return new Vector4(oneExtentX, oneExtentY, oneJitterX, oneJitterY);
         }
@@ -174,45 +177,46 @@ namespace Enviro
             return GetProjectionExtents(camera, eye, 0.0f, 0.0f);
         }
 
-        public static Vector4 GetProjectionExtents(Camera camera, Camera.StereoscopicEye eye, float texelOffsetX, float texelOffsetY)
+        public static Vector4 GetProjectionExtents(Camera camera, Camera.StereoscopicEye eye, float texelOffsetX,
+            float texelOffsetY)
         {
             Matrix4x4 inv;
 
-            if(camera.stereoEnabled)
+            if (camera.stereoEnabled)
                 inv = Matrix4x4.Inverse(camera.GetStereoProjectionMatrix(eye));
             else
                 inv = Matrix4x4.Inverse(camera.projectionMatrix);
-                
-            Vector3 ray00 = inv.MultiplyPoint3x4(new Vector3(-1.0f, -1.0f, 0.95f));
-            Vector3 ray11 = inv.MultiplyPoint3x4(new Vector3(1.0f, 1.0f, 0.95f));
+
+            var ray00 = inv.MultiplyPoint3x4(new Vector3(-1.0f, -1.0f, 0.95f));
+            var ray11 = inv.MultiplyPoint3x4(new Vector3(1.0f, 1.0f, 0.95f));
 
             ray00 /= -ray00.z;
-            ray11 /= -ray11.z; 
+            ray11 /= -ray11.z;
 
-            float oneExtentX = 0.5f * (ray11.x - ray00.x);
-            float oneExtentY = 0.5f * (ray11.y - ray00.y);
-            float texelSizeX = oneExtentX / (0.5f * camera.pixelWidth);
-            float texelSizeY = oneExtentY / (0.5f * camera.pixelHeight);
-            float oneJitterX = 0.5f * (ray11.x + ray00.x) + texelSizeX * texelOffsetX;
-            float oneJitterY = 0.5f * (ray11.y + ray00.y) + texelSizeY * texelOffsetY;
+            var oneExtentX = 0.5f * (ray11.x - ray00.x);
+            var oneExtentY = 0.5f * (ray11.y - ray00.y);
+            var texelSizeX = oneExtentX / (0.5f * camera.pixelWidth);
+            var texelSizeY = oneExtentY / (0.5f * camera.pixelHeight);
+            var oneJitterX = 0.5f * (ray11.x + ray00.x) + texelSizeX * texelOffsetX;
+            var oneJitterY = 0.5f * (ray11.y + ray00.y) + texelSizeY * texelOffsetY;
 
             return new Vector4(oneExtentX, oneExtentY, oneJitterX, oneJitterY);
         }
 
         public static EnviroQuality GetQualityForCamera(Camera cam)
         {
-            if(EnviroManager.instance.Quality != null)
+            if (EnviroManager.instance.Quality != null)
             {
-                EnviroQuality myQuality = EnviroManager.instance.Quality.Settings.defaultQuality;
+                var myQuality = EnviroManager.instance.Quality.Settings.defaultQuality;
 
-                for(int i = 0; i < EnviroManager.instance.Cameras.Count; i++)
-                {
-                    if(EnviroManager.instance.Cameras[i].camera != null && EnviroManager.instance.Cameras[i].camera == cam && EnviroManager.instance.Cameras[i].quality != null)
+                for (var i = 0; i < EnviroManager.instance.Cameras.Count; i++)
+                    if (EnviroManager.instance.Cameras[i].camera != null &&
+                        EnviroManager.instance.Cameras[i].camera == cam &&
+                        EnviroManager.instance.Cameras[i].quality != null)
                     {
                         myQuality = EnviroManager.instance.Cameras[i].quality;
                         break;
                     }
-                }
 
                 return myQuality;
             }
@@ -225,13 +229,9 @@ namespace Enviro
 
         public static bool ResetMatrix(Camera cam)
         {
-                for(int i = 0; i < EnviroManager.instance.Cameras.Count; i++)
-                {
-                    if(EnviroManager.instance.Cameras[i].camera != null && EnviroManager.instance.Cameras[i].camera == cam)
-                    {
-                        return EnviroManager.instance.Cameras[i].resetMatrix;
-                    }
-                }
+            for (var i = 0; i < EnviroManager.instance.Cameras.Count; i++)
+                if (EnviroManager.instance.Cameras[i].camera != null && EnviroManager.instance.Cameras[i].camera == cam)
+                    return EnviroManager.instance.Cameras[i].resetMatrix;
 
             return false;
         }
@@ -239,19 +239,16 @@ namespace Enviro
         //Find the default profile.
         public static EnviroModule GetDefaultPreset(string name)
         {
-    #if UNITY_EDITOR
-            string[] assets = UnityEditor.AssetDatabase.FindAssets(name, null);
+#if UNITY_EDITOR
+            var assets = UnityEditor.AssetDatabase.FindAssets(name, null);
 
-            for (int idx = 0; idx < assets.Length; idx++)
+            for (var idx = 0; idx < assets.Length; idx++)
             {
-                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(assets[idx]);
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(assets[idx]);
 
-                if (path.Contains(".asset"))
-                {
-                    return UnityEditor.AssetDatabase.LoadAssetAtPath<EnviroModule>(path);
-                }
+                if (path.Contains(".asset")) return UnityEditor.AssetDatabase.LoadAssetAtPath<EnviroModule>(path);
             }
-    #endif
+#endif
             return null;
         }
 

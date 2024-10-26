@@ -2,90 +2,89 @@
 using UnityEditor.Build;
 using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.Rendering; 
+using UnityEngine.Rendering;
 
 namespace Enviro
 {
-public class ShaderStripper : IPreprocessShaders
-{
-		private const string LOG_FILE_PATH = "Library/Shader Compilation Results.txt";
+    public class ShaderStripper : IPreprocessShaders
+    {
+        private const string LOG_FILE_PATH = "Library/Shader Compilation Results.txt";
 
-		private static readonly ShaderKeyword[] SKIPPED_VARIANTS = new ShaderKeyword[]
-		{
-			new ShaderKeyword( "ENVIROHDRP" ),
-			new ShaderKeyword( "ENVIROURP" ),
-		};
+        private static readonly ShaderKeyword[] SKIPPED_VARIANTS = new ShaderKeyword[]
+        {
+            new("ENVIROHDRP"),
+            new("ENVIROURP")
+        };
 
-		public int callbackOrder { get { return 0; } }
+        public int callbackOrder => 0;
 
-		public void OnProcessShader( Shader shader, ShaderSnippetData snippet, IList<ShaderCompilerData> data )
-		{
-			string shaderName = shader.name;
- 
-		//URP Shader
-		#if !ENVIRO_URP
-			if(shaderName == "Hidden/EnviroBlitThrough")
-				data.Clear();
+        public void OnProcessShader(Shader shader, ShaderSnippetData snippet, IList<ShaderCompilerData> data)
+        {
+            var shaderName = shader.name;
 
-			if(shaderName == "Hidden/VolumetricsURP")
-				data.Clear();
-		#endif 
+            //URP Shader
+#if !ENVIRO_URP
+            if (shaderName == "Hidden/EnviroBlitThrough")
+                data.Clear();
 
-		//URP 17+ Shader
-		#if !ENVIRO_URP || !UNITY_6000_0_OR_NEWER
-		if(shaderName == "Hidden/EnviroBlitThroughURP17")
-			data.Clear();
+            if (shaderName == "Hidden/VolumetricsURP")
+                data.Clear();
+#endif
 
-		if(shaderName == "Hidden/EnviroBlurURP")
-			data.Clear();
+            //URP 17+ Shader
+#if !ENVIRO_URP || !UNITY_6000_0_OR_NEWER
+            if (shaderName == "Hidden/EnviroBlitThroughURP17")
+                data.Clear();
 
-		if(shaderName == "Hidden/EnviroHeightFogURP")
-			data.Clear();
+            if (shaderName == "Hidden/EnviroBlurURP")
+                data.Clear();
 
-		if(shaderName == "Hidden/EnviroApplyShadowsURP")
-			data.Clear();
+            if (shaderName == "Hidden/EnviroHeightFogURP")
+                data.Clear();
 
-		if(shaderName == "Hidden/EnviroVolumetricCloudsBlendURP")
-			data.Clear();
-		
-		if(shaderName == "Hidden/EnviroVolumetricCloudsDepthURP")
-			data.Clear();
+            if (shaderName == "Hidden/EnviroApplyShadowsURP")
+                data.Clear();
 
-		if(shaderName == "Hidden/EnviroCloudsRaymarchURP")
-			data.Clear();
+            if (shaderName == "Hidden/EnviroVolumetricCloudsBlendURP")
+                data.Clear();
 
-		if(shaderName == "Hidden/EnviroVolumetricCloudsReprojectURP")
-			data.Clear();
+            if (shaderName == "Hidden/EnviroVolumetricCloudsDepthURP")
+                data.Clear();
 
-		#endif
+            if (shaderName == "Hidden/EnviroCloudsRaymarchURP")
+                data.Clear();
 
-		//HDRP Shaders
-		#if !ENVIRO_HDRP
-			if(shaderName == "Hidden/Enviro/BlitTroughHDRP")
-				data.Clear();
-	
-			if(shaderName == "Hidden/EnviroApplyShadowsHDRP")
-				data.Clear();
+            if (shaderName == "Hidden/EnviroVolumetricCloudsReprojectURP")
+                data.Clear();
 
-			if(shaderName == "Hidden/EnviroCloudsRaymarchHDRP")
-				data.Clear();
+#endif
 
-			if(shaderName == "Hidden/EnviroVolumetricCloudsBlendHDRP")
-				data.Clear();
+            //HDRP Shaders
+#if !ENVIRO_HDRP
+            if (shaderName == "Hidden/Enviro/BlitTroughHDRP")
+                data.Clear();
 
-			if(shaderName == "Hidden/EnviroVolumetricCloudsDepthHDRP")
-				data.Clear();
+            if (shaderName == "Hidden/EnviroApplyShadowsHDRP")
+                data.Clear();
 
-			if(shaderName == "Hidden/EnviroVolumetricCloudsReprojectHDRP")
-				data.Clear();
+            if (shaderName == "Hidden/EnviroCloudsRaymarchHDRP")
+                data.Clear();
 
-			if(shaderName == "Hidden/EnviroHeightFogHDRP")
-				data.Clear();
+            if (shaderName == "Hidden/EnviroVolumetricCloudsBlendHDRP")
+                data.Clear();
 
-			if(shaderName == "Enviro/HDRP/Sky")
-				data.Clear();
-		#endif
-		}
-	}
+            if (shaderName == "Hidden/EnviroVolumetricCloudsDepthHDRP")
+                data.Clear();
+
+            if (shaderName == "Hidden/EnviroVolumetricCloudsReprojectHDRP")
+                data.Clear();
+
+            if (shaderName == "Hidden/EnviroHeightFogHDRP")
+                data.Clear();
+
+            if (shaderName == "Enviro/HDRP/Sky")
+                data.Clear();
+#endif
+        }
+    }
 }
-

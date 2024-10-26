@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System; 
+using System;
 
 [Serializable]
 public class EnviroModule : ScriptableObject
@@ -12,16 +12,13 @@ public class EnviroModule : ScriptableObject
 
     public virtual void Enable()
     {
-
     }
 
     public virtual void Disable()
     {
-
     }
-    
-    public virtual void UpdateModule ()
+
+    public virtual void UpdateModule()
     {
-        
     }
 }

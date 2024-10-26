@@ -7,16 +7,18 @@ using UnityEngine;
 using Mirror;
 #endif
 using System.Collections;
+
 namespace Enviro
 {
-	#if ENVIRO_MIRROR_SUPPORT
+#if ENVIRO_MIRROR_SUPPORT
 	[AddComponentMenu("Enviro 3/Integrations/Mirror Server")]
 	[RequireComponent(typeof (NetworkIdentity))]
 	public class EnviroMirrorServer : NetworkBehaviour {
-	#else
-	public class EnviroMirrorServer : MonoBehaviour {
-	#endif
-	#if ENVIRO_MIRROR_SUPPORT
+#else
+    public class EnviroMirrorServer : MonoBehaviour
+    {
+#endif
+#if ENVIRO_MIRROR_SUPPORT
 		public float updateSmoothing = 15f;
 
 		[SyncVar] private float networkHours;
@@ -116,7 +118,6 @@ namespace Enviro
 			}
 
 		}
-	#endif
-	}
+#endif
+    }
 }
-

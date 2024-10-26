@@ -24,24 +24,22 @@ namespace Enviro
 
     public class EnviroConfigurationCreation
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [UnityEditor.MenuItem("Assets/Create/Enviro3/Configuration")]
-        #endif
+#endif
         public static EnviroConfiguration CreateMyAsset()
         {
-            EnviroConfiguration config = ScriptableObject.CreateInstance<EnviroConfiguration>();
-            #if UNITY_EDITOR
+            var config = ScriptableObject.CreateInstance<EnviroConfiguration>();
+#if UNITY_EDITOR
             // Create and save the new profile with unique name
-            string path = UnityEditor.AssetDatabase.GetAssetPath (UnityEditor.Selection.activeObject);
-            if (path == "")
-            {
-                path = "Assets/Enviro 3 - Sky and Weather";
-            }
-            string assetPathAndName = UnityEditor.AssetDatabase.GenerateUniqueAssetPath (path + "/New " + "Enviro Configuration" + ".asset");
-            UnityEditor.AssetDatabase.CreateAsset (config, assetPathAndName);
-            UnityEditor.AssetDatabase.SaveAssets ();
+            var path = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.Selection.activeObject);
+            if (path == "") path = "Assets/Enviro 3 - Sky and Weather";
+            var assetPathAndName =
+                UnityEditor.AssetDatabase.GenerateUniqueAssetPath(path + "/New " + "Enviro Configuration" + ".asset");
+            UnityEditor.AssetDatabase.CreateAsset(config, assetPathAndName);
+            UnityEditor.AssetDatabase.SaveAssets();
             UnityEditor.AssetDatabase.Refresh();
-            #endif
+#endif
             return config;
         }
     }

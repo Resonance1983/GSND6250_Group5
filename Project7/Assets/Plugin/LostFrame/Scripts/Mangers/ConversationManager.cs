@@ -14,7 +14,7 @@ namespace LostFrame
         public AnimationCurve fadeCurve;
         public Text conversationText;
         public List<string> ConversationContent = new();
-        public String transitionText;
+        public string transitionText;
 
         private void Start()
         {

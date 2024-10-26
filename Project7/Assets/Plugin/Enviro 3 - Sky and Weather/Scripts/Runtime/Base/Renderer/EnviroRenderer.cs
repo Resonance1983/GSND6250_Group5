@@ -4,56 +4,54 @@ using UnityEngine;
 
 namespace Enviro
 {
-    [ExecuteInEditMode] 
+    [ExecuteInEditMode]
     [ImageEffectAllowedInSceneView]
     public class EnviroRenderer : MonoBehaviour
     {
-        [Tooltip("Assign a quality here if you want to use different settings for this camera. Otherwise it takes settings from Enviro Manager.")]
+        [Tooltip(
+            "Assign a quality here if you want to use different settings for this camera. Otherwise it takes settings from Enviro Manager.")]
         private EnviroQuality myQuality;
+
         private Camera myCam;
         private EnviroVolumetricCloudRenderer volumetricCloudsRender;
         private Vector3 floatingPointOriginMod = Vector3.zero;
 
-        void OnEnable()
+        private void OnEnable()
         {
             myCam = GetComponent<Camera>();
 
             //Disable this component in URP and HDRP.
-    #if ENVIRO_HDRP || ENVIRO_URP
+#if ENVIRO_HDRP || ENVIRO_URP
             this.enabled = false;
-    #endif
+#endif
         }
 
-        void OnDisable ()
+        private void OnDisable()
         {
-             CleanupVolumetricRenderer();
+            CleanupVolumetricRenderer();
         }
 
         private void CleanupVolumetricRenderer()
         {
-            if(volumetricCloudsRender != null)
+            if (volumetricCloudsRender != null)
             {
-                if(volumetricCloudsRender.raymarchMat != null)
+                if (volumetricCloudsRender.raymarchMat != null)
                     DestroyImmediate(volumetricCloudsRender.raymarchMat);
 
-                if(volumetricCloudsRender.blendAndLightingMat != null)
+                if (volumetricCloudsRender.blendAndLightingMat != null)
                     DestroyImmediate(volumetricCloudsRender.blendAndLightingMat);
 
-                if(volumetricCloudsRender.reprojectMat != null)
+                if (volumetricCloudsRender.reprojectMat != null)
                     DestroyImmediate(volumetricCloudsRender.reprojectMat);
 
-                if(volumetricCloudsRender.undersampleBuffer != null)
+                if (volumetricCloudsRender.undersampleBuffer != null)
                     DestroyImmediate(volumetricCloudsRender.undersampleBuffer);
-                
-                if(volumetricCloudsRender.fullBuffer != null && volumetricCloudsRender.fullBuffer.Length > 0)
-                    { 
-                        for (int i = 0; i < volumetricCloudsRender.fullBuffer.Length; i++)
-                        {
-                            if(volumetricCloudsRender.fullBuffer[i] != null)
-                                DestroyImmediate(volumetricCloudsRender.fullBuffer[i]);
-                        }                     
-                    }            
-            } 
+
+                if (volumetricCloudsRender.fullBuffer != null && volumetricCloudsRender.fullBuffer.Length > 0)
+                    for (var i = 0; i < volumetricCloudsRender.fullBuffer.Length; i++)
+                        if (volumetricCloudsRender.fullBuffer[i] != null)
+                            DestroyImmediate(volumetricCloudsRender.fullBuffer[i]);
+            }
         }
 
         private void SetMatrix()
@@ -61,17 +59,18 @@ namespace Enviro
             if (myCam.stereoEnabled)
             {
                 // Both stereo eye inverse view matrices
-                Matrix4x4 left_world_from_view = myCam.GetStereoViewMatrix(Camera.StereoscopicEye.Left).inverse;
-                Matrix4x4 right_world_from_view = myCam.GetStereoViewMatrix(Camera.StereoscopicEye.Right).inverse;
+                var left_world_from_view = myCam.GetStereoViewMatrix(Camera.StereoscopicEye.Left).inverse;
+                var right_world_from_view = myCam.GetStereoViewMatrix(Camera.StereoscopicEye.Right).inverse;
 
                 // Both stereo eye inverse projection matrices, plumbed through GetGPUProjectionMatrix to compensate for render texture
-                Matrix4x4 left_screen_from_view = myCam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
-                Matrix4x4 right_screen_from_view = myCam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
-                Matrix4x4 left_view_from_screen = GL.GetGPUProjectionMatrix(left_screen_from_view, true).inverse;
-                Matrix4x4 right_view_from_screen = GL.GetGPUProjectionMatrix(right_screen_from_view, true).inverse;
+                var left_screen_from_view = myCam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
+                var right_screen_from_view = myCam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
+                var left_view_from_screen = GL.GetGPUProjectionMatrix(left_screen_from_view, true).inverse;
+                var right_view_from_screen = GL.GetGPUProjectionMatrix(right_screen_from_view, true).inverse;
 
                 // Negate [1,1] to reflect Unity's CBuffer state
-                if (SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLCore && SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3)
+                if (SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLCore &&
+                    SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3)
                 {
                     left_view_from_screen[1, 1] *= -1;
                     right_view_from_screen[1, 1] *= -1;
@@ -85,148 +84,159 @@ namespace Enviro
             else
             {
                 // Main eye inverse view matrix
-                Matrix4x4 left_world_from_view = myCam.cameraToWorldMatrix;
-                
+                var left_world_from_view = myCam.cameraToWorldMatrix;
+
                 // Inverse projection matrices, plumbed through GetGPUProjectionMatrix to compensate for render texture
-                Matrix4x4 screen_from_view = myCam.projectionMatrix;
-                Matrix4x4 left_view_from_screen = GL.GetGPUProjectionMatrix(screen_from_view, true).inverse;
+                var screen_from_view = myCam.projectionMatrix;
+                var left_view_from_screen = GL.GetGPUProjectionMatrix(screen_from_view, true).inverse;
 
                 // Negate [1,1] to reflect Unity's CBuffer state
-                if (SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLCore && SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3)
+                if (SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLCore &&
+                    SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3)
                     left_view_from_screen[1, 1] *= -1;
 
                 // Store matrices
                 Shader.SetGlobalMatrix("_LeftWorldFromView", left_world_from_view);
                 Shader.SetGlobalMatrix("_LeftViewFromScreen", left_view_from_screen);
             }
-        } 
+        }
 
         private void Update()
         {
-            
         }
 
         [ImageEffectOpaque]
-        private void OnRenderImage(RenderTexture src, RenderTexture dest) 
-        {   
-            if(EnviroManager.instance == null)
+        private void OnRenderImage(RenderTexture src, RenderTexture dest)
+        {
+            if (EnviroManager.instance == null)
             {
-                Graphics.Blit(src,dest);
+                Graphics.Blit(src, dest);
                 return;
             }
 
-            if(myCam == null)
-               myCam = GetComponent<Camera>();
+            if (myCam == null)
+                myCam = GetComponent<Camera>();
 
             if (myCam.actualRenderingPath == RenderingPath.Forward)
                 myCam.depthTextureMode |= DepthTextureMode.Depth;
 
-            if(EnviroHelper.ResetMatrix(myCam))
+            if (EnviroHelper.ResetMatrix(myCam))
                 myCam.ResetProjectionMatrix();
-  
+
             myQuality = EnviroHelper.GetQualityForCamera(myCam);
 
             //Set what to render on this camera.
-            bool renderVolumetricClouds = false;
-            bool renderFog = false;
- 
-            if(EnviroManager.instance.Quality != null)
-            {
-                if(EnviroManager.instance.VolumetricClouds != null)
-                    renderVolumetricClouds = myQuality.volumetricCloudsOverride.volumetricClouds;  
+            var renderVolumetricClouds = false;
+            var renderFog = false;
 
-                if(EnviroManager.instance.Fog != null)
-                    renderFog = myQuality.fogOverride.fog;  
+            if (EnviroManager.instance.Quality != null)
+            {
+                if (EnviroManager.instance.VolumetricClouds != null)
+                    renderVolumetricClouds = myQuality.volumetricCloudsOverride.volumetricClouds;
+
+                if (EnviroManager.instance.Fog != null)
+                    renderFog = myQuality.fogOverride.fog;
             }
             else
             {
-                if(EnviroManager.instance.VolumetricClouds != null)
+                if (EnviroManager.instance.VolumetricClouds != null)
                     renderVolumetricClouds = EnviroManager.instance.VolumetricClouds.settingsQuality.volumetricClouds;
 
-                if(EnviroManager.instance.Fog != null)
+                if (EnviroManager.instance.Fog != null)
                     renderFog = EnviroManager.instance.Fog.Settings.fog;
             }
 
-            if (EnviroManager.instance.Objects.worldAnchor != null) 
+            if (EnviroManager.instance.Objects.worldAnchor != null)
                 floatingPointOriginMod = EnviroManager.instance.Objects.worldAnchor.transform.position;
             else
-                floatingPointOriginMod = Vector3.zero; 
+                floatingPointOriginMod = Vector3.zero;
 
             ////////Rendering//////////
-            SetMatrix();  
+            SetMatrix();
 
-            if(volumetricCloudsRender == null)
-               volumetricCloudsRender = new EnviroVolumetricCloudRenderer();
+            if (volumetricCloudsRender == null)
+                volumetricCloudsRender = new EnviroVolumetricCloudRenderer();
 
             //Render volumetrics mask first
-            if(EnviroManager.instance.Fog != null && renderFog)
-               EnviroManager.instance.Fog.RenderVolumetrics(myCam, src);
- 
-            if(EnviroManager.instance.Fog != null && EnviroManager.instance.VolumetricClouds != null && renderVolumetricClouds && renderFog)
-            { 
-                //Change the order of clouds and fog
-                RenderTexture temp = RenderTexture.GetTemporary(src.descriptor);
-                RenderTexture temp2 = RenderTexture.GetTemporary(src.descriptor);
+            if (EnviroManager.instance.Fog != null && renderFog)
+                EnviroManager.instance.Fog.RenderVolumetrics(myCam, src);
 
-        
-                if(myCam.transform.position.y - floatingPointOriginMod.y < EnviroManager.instance.VolumetricClouds.settingsLayer1.bottomCloudsHeight)
+            if (EnviroManager.instance.Fog != null && EnviroManager.instance.VolumetricClouds != null &&
+                renderVolumetricClouds && renderFog)
+            {
+                //Change the order of clouds and fog
+                var temp = RenderTexture.GetTemporary(src.descriptor);
+                var temp2 = RenderTexture.GetTemporary(src.descriptor);
+
+
+                if (myCam.transform.position.y - floatingPointOriginMod.y <
+                    EnviroManager.instance.VolumetricClouds.settingsLayer1.bottomCloudsHeight)
                 {
-                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, src, temp, volumetricCloudsRender, myQuality);
-                    
-                    if(EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows && myCam.cameraType != CameraType.Reflection)
+                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, src, temp,
+                        volumetricCloudsRender, myQuality);
+
+                    if (EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows &&
+                        myCam.cameraType != CameraType.Reflection)
                     {
-                        EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp,temp2,volumetricCloudsRender);
-                        EnviroManager.instance.Fog.RenderHeightFog(myCam,temp2,dest);
-                    } 
-                    else 
-                    {
-                        EnviroManager.instance.Fog.RenderHeightFog(myCam,temp,dest);
-                    }
-                }
-                else 
-                {
-                    EnviroManager.instance.Fog.RenderHeightFog(myCam,src,temp);
-                    
-                    if(EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows && myCam.cameraType != CameraType.Reflection)
-                    {
-                        EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam,temp,temp2,volumetricCloudsRender,myQuality); 
-                        EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp2,dest,volumetricCloudsRender);
+                        EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp, temp2,
+                            volumetricCloudsRender);
+                        EnviroManager.instance.Fog.RenderHeightFog(myCam, temp2, dest);
                     }
                     else
                     {
-                        EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam,temp,dest,volumetricCloudsRender,myQuality); 
+                        EnviroManager.instance.Fog.RenderHeightFog(myCam, temp, dest);
+                    }
+                }
+                else
+                {
+                    EnviroManager.instance.Fog.RenderHeightFog(myCam, src, temp);
+
+                    if (EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows &&
+                        myCam.cameraType != CameraType.Reflection)
+                    {
+                        EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, temp, temp2,
+                            volumetricCloudsRender, myQuality);
+                        EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp2, dest,
+                            volumetricCloudsRender);
+                    }
+                    else
+                    {
+                        EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, temp, dest,
+                            volumetricCloudsRender, myQuality);
                     }
                 }
 
                 RenderTexture.ReleaseTemporary(temp);
                 RenderTexture.ReleaseTemporary(temp2);
             }
-            else if(EnviroManager.instance.VolumetricClouds != null && renderVolumetricClouds && !renderFog)
+            else if (EnviroManager.instance.VolumetricClouds != null && renderVolumetricClouds && !renderFog)
             {
-                if(EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows && myCam.cameraType != CameraType.Reflection)
+                if (EnviroManager.instance.VolumetricClouds.settingsGlobal.cloudShadows &&
+                    myCam.cameraType != CameraType.Reflection)
                 {
-                    RenderTexture temp = RenderTexture.GetTemporary(src.descriptor);
-                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam,src,temp,volumetricCloudsRender, myQuality);
-                    EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp,dest,volumetricCloudsRender);
+                    var temp = RenderTexture.GetTemporary(src.descriptor);
+                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, src, temp,
+                        volumetricCloudsRender, myQuality);
+                    EnviroManager.instance.VolumetricClouds.RenderCloudsShadows(temp, dest, volumetricCloudsRender);
                     RenderTexture.ReleaseTemporary(temp);
                 }
                 else
                 {
-                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam,src,dest,volumetricCloudsRender, myQuality);
+                    EnviroManager.instance.VolumetricClouds.RenderVolumetricClouds(myCam, src, dest,
+                        volumetricCloudsRender, myQuality);
                 }
-                
-            } 
-            else if (Enviro.EnviroManager.instance.Fog != null && renderFog)
-            {
-                EnviroManager.instance.Fog.RenderHeightFog(myCam,src,dest);
             }
-            else 
+            else if (EnviroManager.instance.Fog != null && renderFog)
             {
-                Graphics.Blit(src,dest);
+                EnviroManager.instance.Fog.RenderHeightFog(myCam, src, dest);
+            }
+            else
+            {
+                Graphics.Blit(src, dest);
             }
 
-            if(!renderVolumetricClouds)
-            Shader.SetGlobalTexture("_EnviroClouds", Texture2D.blackTexture);
+            if (!renderVolumetricClouds)
+                Shader.SetGlobalTexture("_EnviroClouds", Texture2D.blackTexture);
         }
     }
 }

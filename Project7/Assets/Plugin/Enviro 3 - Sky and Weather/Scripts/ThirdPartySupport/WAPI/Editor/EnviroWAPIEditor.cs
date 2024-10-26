@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 #if WORLDAPI_PRESENT
-
 namespace Enviro
 {
 [CustomEditor(typeof(EnviroWorldAPI))]

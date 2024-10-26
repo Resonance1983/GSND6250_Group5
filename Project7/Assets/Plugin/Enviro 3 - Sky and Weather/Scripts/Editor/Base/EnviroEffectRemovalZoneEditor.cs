@@ -6,39 +6,38 @@ using UnityEditorInternal;
 
 namespace Enviro
 {
-    [CustomEditor(typeof(Enviro.EnviroEffectRemovalZone))]
-    public class EnviroEffectRemovalZoneEditor : Editor {
+    [CustomEditor(typeof(EnviroEffectRemovalZone))]
+    public class EnviroEffectRemovalZoneEditor : Editor
+    {
+        private GUIStyle boxStyle;
+        private GUIStyle boxStyleModified;
+        private GUIStyle wrapStyle;
+        private GUIStyle wrapStyle2;
+        private GUIStyle clearStyle;
 
-        GUIStyle boxStyle;
-        GUIStyle boxStyleModified;
-        GUIStyle wrapStyle;
-        GUIStyle wrapStyle2;
-        GUIStyle clearStyle;
-
-        Enviro.EnviroEffectRemovalZone myTarget;
+        private EnviroEffectRemovalZone myTarget;
 
         private Color boxColor1;
 
-        SerializedObject serializedObj;
+        private SerializedObject serializedObj;
 
         private SerializedProperty type, density, radius, stretch, feather, size;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            myTarget = (Enviro.EnviroEffectRemovalZone)target;
-            serializedObj = new SerializedObject (myTarget);
-            boxColor1 = new Color(0.95f, 0.95f, 0.95f,1f);
-            type = serializedObj.FindProperty("type"); 
-            density = serializedObj.FindProperty("density"); 
-            radius = serializedObj.FindProperty("radius"); 
-            stretch = serializedObj.FindProperty("stretch"); 
-            feather = serializedObj.FindProperty("feather"); 
-            size = serializedObj.FindProperty("size"); 
+            myTarget = (EnviroEffectRemovalZone)target;
+            serializedObj = new SerializedObject(myTarget);
+            boxColor1 = new Color(0.95f, 0.95f, 0.95f, 1f);
+            type = serializedObj.FindProperty("type");
+            density = serializedObj.FindProperty("density");
+            radius = serializedObj.FindProperty("radius");
+            stretch = serializedObj.FindProperty("stretch");
+            feather = serializedObj.FindProperty("feather");
+            size = serializedObj.FindProperty("size");
         }
 
-        public override void OnInspectorGUI ()
+        public override void OnInspectorGUI()
         {
-            
             //Set up the box style
             if (boxStyle == null)
             {
@@ -72,7 +71,8 @@ namespace Enviro
                 wrapStyle2.wordWrap = true;
             }
 
-            if (clearStyle == null) {
+            if (clearStyle == null)
+            {
                 clearStyle = new GUIStyle(GUI.skin.label);
                 clearStyle.normal.textColor = GUI.skin.label.normal.textColor;
                 clearStyle.fontStyle = FontStyle.Bold;
@@ -86,7 +86,8 @@ namespace Enviro
             GUILayout.BeginVertical("Information", boxStyleModified);
             GUI.backgroundColor = Color.white;
             GUILayout.Space(20);
-            EditorGUILayout.LabelField("Use this component to hide fog and weather particles for example for indoor areas.", wrapStyle2);
+            EditorGUILayout.LabelField(
+                "Use this component to hide fog and weather particles for example for indoor areas.", wrapStyle2);
             GUILayout.EndVertical();
             GUI.backgroundColor = boxColor1;
             GUILayout.BeginVertical("", boxStyleModified);
@@ -99,26 +100,23 @@ namespace Enviro
             EditorGUILayout.PropertyField(density);
             EditorGUILayout.PropertyField(feather);
             GUILayout.Space(5);
-            if(myTarget.type == Enviro.EnviroEffectRemovalZone.Mode.Spherical)
-            {   
+            if (myTarget.type == EnviroEffectRemovalZone.Mode.Spherical)
+            {
                 EditorGUILayout.PropertyField(radius);
                 EditorGUILayout.PropertyField(stretch);
-            }   
+            }
             else
             {
                 EditorGUILayout.PropertyField(size);
             }
-            
-            if (EditorGUI.EndChangeCheck ()) 
-            {
-			    serializedObj.ApplyModifiedProperties ();
-		    }
-          
+
+            if (EditorGUI.EndChangeCheck()) serializedObj.ApplyModifiedProperties();
+
             ///////
             GUILayout.EndVertical();
-            
+
             // END
-            EditorGUILayout.EndVertical ();
+            EditorGUILayout.EndVertical();
         }
     }
 }

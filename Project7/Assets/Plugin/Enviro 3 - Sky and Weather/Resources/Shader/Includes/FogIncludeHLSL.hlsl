@@ -2,11 +2,11 @@
 #include "VolumetricCloudsBlendIncludeHLSL.hlsl"
 
 #pragma multi_compile __ ENVIRO_VOLUMELIGHT
- 
-TEXTURE2D_X(_EnviroVolumetricFogTex);
-SAMPLER(sampler_EnviroVolumetricFogTex);
+
+TEXTURE2D_X (_EnviroVolumetricFogTex);
+SAMPLER (sampler_EnviroVolumetricFogTex);
 float4 _EnviroVolumetricFogTex_TexelSize;
-float4 _Screen_TexelSize; 
+float4 _Screen_TexelSize;
 
 uniform float4 _EnviroFogParameters; //x = rayorigin1, y = falloff1, z = density1, w = height1
 uniform float4 _EnviroFogParameters2; //x = rayorigin2, y = falloff2, z = density2, w = height2 
@@ -19,11 +19,11 @@ uniform float3 _EnviroWorldOffset;
 #if defined(SHADER_API_D3D11) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN)
 struct EnviroRemovalZones
 {
-   float type; 
-    float3 pos; 
+    float type;
+    float3 pos;
     float radius;
-    float3 size; 
-    float3 axis; 
+    float3 size;
+    float3 axis;
     float stretch;
     float density;
     float feather;
@@ -38,31 +38,31 @@ float _EnviroRemovalZonesCount;
 
 int ihash(int n)
 {
-	n = (n<<13)^n;
-	return (n*(n*n*15731+789221)+1376312589) & 2147483647;
+    n = (n << 13) ^ n;
+    return (n * (n * n * 15731 + 789221) + 1376312589) & 2147483647;
 }
 
 float frand(int n)
 {
-	return ihash(n) / 2147483647.0; 
+    return ihash(n) / 2147483647.0;
 }
 
 float2 cellNoise(int2 p)
 {
-	int i = p.y*256 + p.x;
-	return float2(frand(i), frand(i + 57)) - 0.5;//*2.0-1.0;
-} 
+    int i = p.y * 256 + p.x;
+    return float2(frand(i), frand(i + 57)) - 0.5; //*2.0-1.0;
+}
 
-float Pow2(float x) 
-{ 
+float Pow2(float x)
+{
     return x * x;
 }
 
 float CalculateLineIntegral(float FogHeightFalloff, float RayDirectionY, float RayOriginTerms)
 {
-    float Falloff = FogHeightFalloff * RayDirectionY; 
-    
-    float LineIntegral = ((1.0f - exp2(-Falloff)) / Falloff); 
+    float Falloff = FogHeightFalloff * RayDirectionY;
+
+    float LineIntegral = ((1.0f - exp2(-Falloff)) / Falloff);
     float LineIntegralTaylor = log(2.0) - (0.5 * Pow2(log(2.0))) * Falloff;
 
     return RayOriginTerms * (abs(Falloff) > 0.01f ? LineIntegral : LineIntegralTaylor);
@@ -70,12 +70,13 @@ float CalculateLineIntegral(float FogHeightFalloff, float RayDirectionY, float R
 
 float3 InverseLerp(float lowThreshold, float hiThreshold, float value)
 {
-	return (value - lowThreshold) / (hiThreshold - lowThreshold);
+    return (value - lowThreshold) / (hiThreshold - lowThreshold);
 }
+
 float ClampedInverseLerp(float lowThreshold, float hiThreshold, float value)
 {
-	return saturate(InverseLerp(lowThreshold, hiThreshold, value));
-} 
+    return saturate(InverseLerp(lowThreshold, hiThreshold, value));
+}
 
 
 #if defined(SHADER_API_D3D11) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN)
@@ -84,8 +85,8 @@ void FogZones(float3 pos, inout float density)
 {
     for (int i = 0; i < _EnviroRemovalZonesCount; i++)
     {
-        if(_EnviroRemovalZones[i].type == 0)
-        { 
+        if (_EnviroRemovalZones[i].type == 0)
+        {
             float3 dir = _EnviroRemovalZones[i].pos - pos;
             float3 axis = _EnviroRemovalZones[i].axis;
             float3 dirAlongAxis = dot(dir, axis) * axis;
@@ -95,42 +96,45 @@ void FogZones(float3 pos, inout float density)
             float radius = _EnviroRemovalZones[i].radius;
             float feather = _EnviroRemovalZones[i].feather;
 
-            feather = (1.0 - smoothstep (radius * feather, radius, distsq));
+            feather = (1.0 - smoothstep(radius * feather, radius, distsq));
 
             float contribution = feather * _EnviroRemovalZones[i].density;
             density = density + contribution;
-            density = max(density,0.0);
+            density = max(density, 0.0);
         }
-        else  
+        else
         {
             float influence = 1;
             float3 position = mul(_EnviroRemovalZones[i].transform, float4(pos, 1)).xyz;
 
-            float x = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.x) - ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.x);
-		    float y = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.y) - ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.y);
-		    float z = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.z) - ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.z);
-		    
-            influence = x * y * z; 
+            float x = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.x) -
+                ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.x);
+            float y = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.y) -
+                ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.y);
+            float z = ClampedInverseLerp(-0.5f, -0.5f + _EnviroRemovalZones[i].feather, position.z) -
+                ClampedInverseLerp(0.5f - _EnviroRemovalZones[i].feather, 0.5f, position.z);
+
+            influence = x * y * z;
 
             density += _EnviroRemovalZones[i].density * influence;
-            density = max(density,0.0);
+            density = max(density, 0.0);
         }
     }
-} 
+}
 #endif
 
-float4 GetExponentialHeightFog(float3 wPos, float linearDepth) 
+float4 GetExponentialHeightFog(float3 wPos, float linearDepth)
 {
     wPos = wPos - _EnviroWorldOffset;
 
     const half MinFogOpacity = _EnviroFogParameters3.x;
-  
+
     float3 CameraToReceiver = wPos - _EnviroCameraPos.xyz;
-    float camHeightLimiter = min(2000.0f,_EnviroCameraPos.y - _EnviroWorldOffset.y);
+    float camHeightLimiter = min(2000.0f, _EnviroCameraPos.y - _EnviroWorldOffset.y);
     float CameraToReceiverHeight = wPos.y - camHeightLimiter;
     float3 viewDirection = CameraToReceiver;
     float viewLength = length(viewDirection);
-    viewDirection /= viewLength; 
+    viewDirection /= viewLength;
 
     float fogAmount = 0;
 
@@ -138,40 +142,41 @@ float4 GetExponentialHeightFog(float3 wPos, float linearDepth)
     float CameraToReceiverLengthInv = rsqrt(CameraToReceiverLengthSqr);
     float CameraToReceiverLength = CameraToReceiverLengthSqr * CameraToReceiverLengthInv;
 
-    float RayLength = CameraToReceiverLength; 
+    float RayLength = CameraToReceiverLength;
     float RayDirectionY = CameraToReceiverHeight;
-    
+
     float Exponent = _EnviroFogParameters.y * (camHeightLimiter - _EnviroFogParameters.w);
     float RayOriginTerms = _EnviroFogParameters.z * exp2(-Exponent);
     float ExponentSecond = _EnviroFogParameters2.y * (camHeightLimiter - _EnviroFogParameters2.w);
-    float RayOriginTermsSecond = _EnviroFogParameters2.z * exp2(-ExponentSecond); 
+    float RayOriginTermsSecond = _EnviroFogParameters2.z * exp2(-ExponentSecond);
 
-    fogAmount = (CalculateLineIntegral(_EnviroFogParameters.y, RayDirectionY, RayOriginTerms) + CalculateLineIntegral(_EnviroFogParameters2.y, RayDirectionY, RayOriginTermsSecond)) * RayLength;
+    fogAmount = (CalculateLineIntegral(_EnviroFogParameters.y, RayDirectionY, RayOriginTerms) + CalculateLineIntegral(
+        _EnviroFogParameters2.y, RayDirectionY, RayOriginTermsSecond)) * RayLength;
 
     //Start Distance
-    if(length(CameraToReceiver) <= _EnviroFogParameters3.y)
+    if (length(CameraToReceiver) <= _EnviroFogParameters3.y)
     {
-        float fallOff = ClampedInverseLerp(0.0f,_EnviroFogParameters3.y, length(CameraToReceiver));
-        fogAmount = fogAmount * pow(fallOff,6);
+        float fallOff = ClampedInverseLerp(0.0f, _EnviroFogParameters3.y, length(CameraToReceiver));
+        fogAmount = fogAmount * pow(fallOff, 6);
     }
 
     //Fog Zones
-#if defined(SHADER_API_D3D11) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN)
-    FogZones(wPos,fogAmount);
-#endif
+    #if defined(SHADER_API_D3D11) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN)
+    FogZones(wPos, fogAmount);
+    #endif
 
     float fogfactor = max(exp2(-fogAmount), MinFogOpacity);
-    
+
     // Color  
-    float4 sky = GetSkyColor(viewDirection,0.005f);
-    float3 inscatterColor = lerp(_EnviroFogColor.rgb,sky.rgb,_EnviroFogParameters3.w);
+    float4 sky = GetSkyColor(viewDirection, 0.005f);
+    float3 inscatterColor = lerp(_EnviroFogColor.rgb, sky.rgb, _EnviroFogParameters3.w);
     float3 fogColor = inscatterColor * saturate(1 - fogfactor);
 
     return float4(fogColor, fogfactor);
 }
 
 float3 ApplyVolumetricLights(float4 fogColor, float3 sceneColor, float2 uv)
-{  
+{
     #if defined(ENVIRO_VOLUMELIGHT)
     float4 volumeLightsSample = SAMPLE_TEXTURE2D_X(_EnviroVolumetricFogTex, sampler_EnviroVolumetricFogTex, uv);
      //uvs += cellNoise(uvs.xy * _Screen_TexelSize.zw) * _VolumeScatter_TexelSize.xy * 0.8;
@@ -179,13 +184,12 @@ float3 ApplyVolumetricLights(float4 fogColor, float3 sceneColor, float2 uv)
     float3 volumeLights = volumeLightsSample.rgb;  
     return (sceneColor.rgb * fogColor.a + fogColor.rgb * max(volumeLightsDirectional,0.75)) + volumeLights;
     #else
-    return sceneColor.rgb * fogColor.a + fogColor.rgb; 
+    return sceneColor.rgb * fogColor.a + fogColor.rgb;
     #endif
 }
 
 float3 ApplyFogAndVolumetricLights(float3 sceneColor, float2 uv, float3 wPos, float linearDepth)
 {
-    float4 fog = GetExponentialHeightFog(wPos,linearDepth);
-    return ApplyVolumetricLights(fog,sceneColor,uv);
+    float4 fog = GetExponentialHeightFog(wPos, linearDepth);
+    return ApplyVolumetricLights(fog, sceneColor, uv);
 }
-

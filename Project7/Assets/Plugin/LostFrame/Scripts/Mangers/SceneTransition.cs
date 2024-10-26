@@ -12,9 +12,8 @@ namespace LostFrame
         public AnimationCurve fadeCurve;
         public string nextSceneName;
         // public string nextWeatherName;
-        
-        [HideInInspector]
-        public Text transitionText;
+
+        [HideInInspector] public Text transitionText;
         private Image blackScreen;
 
         private void Start()

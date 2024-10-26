@@ -7,11 +7,11 @@ namespace Enviro
 {
     [CustomEditor(typeof(EnviroLightningModule))]
     public class EnviroLightningModuleEditor : EnviroModuleEditor
-    {  
-        private EnviroLightningModule myTarget; 
+    {
+        private EnviroLightningModule myTarget;
 
         //Properties
-        private SerializedProperty prefab, lightningStorm,randomLightingDelay, randomSpawnRange, randomTargetRange;
+        private SerializedProperty prefab, lightningStorm, randomLightingDelay, randomSpawnRange, randomTargetRange;
 
 
         //On Enable
@@ -19,61 +19,62 @@ namespace Enviro
         {
             base.OnEnable();
 
-            if(!target)
+            if (!target)
                 return;
 
             myTarget = (EnviroLightningModule)target;
             serializedObj = new SerializedObject(myTarget);
             preset = serializedObj.FindProperty("preset");
-            prefab = serializedObj.FindProperty("Settings.prefab"); 
-            lightningStorm = serializedObj.FindProperty("Settings.lightningStorm");  
-            randomLightingDelay = serializedObj.FindProperty("Settings.randomLightingDelay"); 
-            randomSpawnRange = serializedObj.FindProperty("Settings.randomSpawnRange"); 
-            randomTargetRange = serializedObj.FindProperty("Settings.randomTargetRange"); 
-        } 
+            prefab = serializedObj.FindProperty("Settings.prefab");
+            lightningStorm = serializedObj.FindProperty("Settings.lightningStorm");
+            randomLightingDelay = serializedObj.FindProperty("Settings.randomLightingDelay");
+            randomSpawnRange = serializedObj.FindProperty("Settings.randomSpawnRange");
+            randomTargetRange = serializedObj.FindProperty("Settings.randomTargetRange");
+        }
 
         public override void OnInspectorGUI()
         {
-            if(!target)
+            if (!target)
                 return;
 
             base.OnInspectorGUI();
-            
+
             GUI.backgroundColor = baseModuleColor;
-            GUILayout.BeginVertical("",boxStyleModified);
+            GUILayout.BeginVertical("", boxStyleModified);
             GUI.backgroundColor = Color.white;
             EditorGUILayout.BeginHorizontal();
             myTarget.showModuleInspector = GUILayout.Toggle(myTarget.showModuleInspector, "Lightning", headerFoldout);
-            
+
             GUILayout.FlexibleSpace();
-            if(GUILayout.Button("x", EditorStyles.miniButtonRight,GUILayout.Width(18), GUILayout.Height(18)))
+            if (GUILayout.Button("x", EditorStyles.miniButtonRight, GUILayout.Width(18), GUILayout.Height(18)))
             {
-                EnviroManager.instance.RemoveModule(EnviroManager.ModuleType.Lightning); //Add Remove
+                EnviroManager.instance.RemoveModule(EnviroManagerBase.ModuleType.Lightning); //Add Remove
                 DestroyImmediate(this);
                 return;
-            } 
-            
+            }
+
             EditorGUILayout.EndHorizontal();
-            
-            if(myTarget.showModuleInspector)
+
+            if (myTarget.showModuleInspector)
             {
-                RenderDisableInputBox(); 
-                serializedObj.UpdateIfRequiredOrScript ();
+                RenderDisableInputBox();
+                serializedObj.UpdateIfRequiredOrScript();
                 EditorGUI.BeginChangeCheck();
-                
+
                 // Set Values
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
-                myTarget.showLightningControls = GUILayout.Toggle(myTarget.showLightningControls, "Lightning Controls", headerFoldout);               
-                if(myTarget.showLightningControls)
+                myTarget.showLightningControls =
+                    GUILayout.Toggle(myTarget.showLightningControls, "Lightning Controls", headerFoldout);
+                if (myTarget.showLightningControls)
                 {
                     GUILayout.Space(10);
                     DisableInputStart();
                     EditorGUILayout.PropertyField(lightningStorm);
                     DisableInputEnd();
                     GUILayout.Space(5);
-                    EditorGUILayout.PropertyField(prefab);      
+                    EditorGUILayout.PropertyField(prefab);
                     GUILayout.Space(5);
                     EditorGUILayout.LabelField("Random Lighting Storm", headerStyle);
                     DisableInputStart();
@@ -82,50 +83,43 @@ namespace Enviro
                     EditorGUILayout.PropertyField(randomSpawnRange);
                     EditorGUILayout.PropertyField(randomTargetRange);
                 }
+
                 GUILayout.EndVertical();
 
 
                 // Save Load
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 myTarget.showSaveLoad = GUILayout.Toggle(myTarget.showSaveLoad, "Save/Load", headerFoldout);
-                
-                if(myTarget.showSaveLoad)
+
+                if (myTarget.showSaveLoad)
                 {
                     EditorGUILayout.PropertyField(preset);
 
-                    GUILayout.BeginHorizontal("",wrapStyle);
+                    GUILayout.BeginHorizontal("", wrapStyle);
 
-                    if(myTarget.preset != null)
+                    if (myTarget.preset != null)
                     {
-                        if(GUILayout.Button("Load"))
-                        {
-                            myTarget.LoadModuleValues();
-                        }
-                        if(GUILayout.Button("Save"))
-                        {
-                            myTarget.SaveModuleValues(myTarget.preset);
-                        }
+                        if (GUILayout.Button("Load")) myTarget.LoadModuleValues();
+                        if (GUILayout.Button("Save")) myTarget.SaveModuleValues(myTarget.preset);
                     }
-                    if(GUILayout.Button("Save As New"))
-                    {
-                        myTarget.SaveModuleValues();
-                    }
+
+                    if (GUILayout.Button("Save As New")) myTarget.SaveModuleValues();
 
                     GUILayout.EndHorizontal();
-
-     
                 }
+
                 GUILayout.EndVertical();
                 /// Save Load End
-                
-                ApplyChanges ();
+
+                ApplyChanges();
             }
+
             GUILayout.EndVertical();
 
-            if(myTarget.showModuleInspector)
-             GUILayout.Space(20);
+            if (myTarget.showModuleInspector)
+                GUILayout.Space(20);
         }
     }
 }

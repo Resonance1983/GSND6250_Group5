@@ -9,14 +9,15 @@ namespace LostFrame
     public class TrackMomentum : Singleton<TrackMomentum>
     {
         private Rigidbody characterRb;
-        
-        [SerializeField]
-        public bool isAutoConnect = false;
+
+        [SerializeField] public bool isAutoConnect = false;
+
         [ConditionalHide("isAutoConnect", false)]
         public Rigidbody connectRb = null;
+
         [ConditionalHide("isAutoConnect", true)]
-        public List<String> tagList = new List<string>();
-        
+        public List<string> tagList = new();
+
         private Vector3 connectPreviousPostion, connectMovement, connectVelocity;
 
         private void Start()
@@ -35,10 +36,7 @@ namespace LostFrame
 
         private void OnTriggerEnter(Collider other)
         {
-            if (tagList.Contains(other.tag))
-            {
-                other.TryGetComponent<Rigidbody>(out connectRb);
-            }
+            if (tagList.Contains(other.tag)) other.TryGetComponent<Rigidbody>(out connectRb);
         }
 
         private void FixedUpdate()

@@ -10,13 +10,24 @@ namespace Enviro
 
         //Properties
         //Reflection Probe
-        private SerializedProperty globalReflections, customRendering, customRenderingTimeSlicing, globalReflectionTimeSlicingMode, globalReflectionsUpdateOnGameTime, globalReflectionsUpdateOnPosition, globalReflectionsIntensity, globalReflectionsTimeTreshold, globalReflectionsPositionTreshold, globalReflectionsScale, globalReflectionResolution, globalReflectionLayers, updateDefaultEnvironmentReflections;
+        private SerializedProperty globalReflections,
+            customRendering,
+            customRenderingTimeSlicing,
+            globalReflectionTimeSlicingMode,
+            globalReflectionsUpdateOnGameTime,
+            globalReflectionsUpdateOnPosition,
+            globalReflectionsIntensity,
+            globalReflectionsTimeTreshold,
+            globalReflectionsPositionTreshold,
+            globalReflectionsScale,
+            globalReflectionResolution,
+            globalReflectionLayers,
+            updateDefaultEnvironmentReflections;
 
         //On Enable
         public override void OnEnable()
         {
-
-            if(!target)
+            if (!target)
                 return;
 
             base.OnEnable();
@@ -25,57 +36,63 @@ namespace Enviro
             serializedObj = new SerializedObject(myTarget);
             preset = serializedObj.FindProperty("preset");
             //Reflection Probe
-            globalReflections = serializedObj.FindProperty("Settings.globalReflections"); 
-            updateDefaultEnvironmentReflections = serializedObj.FindProperty("Settings.updateDefaultEnvironmentReflections"); 
-            customRendering = serializedObj.FindProperty("Settings.customRendering"); 
-            customRenderingTimeSlicing = serializedObj.FindProperty("Settings.customRenderingTimeSlicing"); 
+            globalReflections = serializedObj.FindProperty("Settings.globalReflections");
+            updateDefaultEnvironmentReflections =
+                serializedObj.FindProperty("Settings.updateDefaultEnvironmentReflections");
+            customRendering = serializedObj.FindProperty("Settings.customRendering");
+            customRenderingTimeSlicing = serializedObj.FindProperty("Settings.customRenderingTimeSlicing");
             globalReflectionTimeSlicingMode = serializedObj.FindProperty("Settings.globalReflectionTimeSlicingMode");
-            globalReflectionsUpdateOnGameTime = serializedObj.FindProperty("Settings.globalReflectionsUpdateOnGameTime");
-            globalReflectionsUpdateOnPosition = serializedObj.FindProperty("Settings.globalReflectionsUpdateOnPosition");
+            globalReflectionsUpdateOnGameTime =
+                serializedObj.FindProperty("Settings.globalReflectionsUpdateOnGameTime");
+            globalReflectionsUpdateOnPosition =
+                serializedObj.FindProperty("Settings.globalReflectionsUpdateOnPosition");
             globalReflectionsIntensity = serializedObj.FindProperty("Settings.globalReflectionsIntensity");
             globalReflectionsTimeTreshold = serializedObj.FindProperty("Settings.globalReflectionsTimeTreshold");
-            globalReflectionsPositionTreshold = serializedObj.FindProperty("Settings.globalReflectionsPositionTreshold");
+            globalReflectionsPositionTreshold =
+                serializedObj.FindProperty("Settings.globalReflectionsPositionTreshold");
             globalReflectionsScale = serializedObj.FindProperty("Settings.globalReflectionsScale");
             globalReflectionResolution = serializedObj.FindProperty("Settings.globalReflectionResolution");
             globalReflectionLayers = serializedObj.FindProperty("Settings.globalReflectionLayers");
         }
+
 /*
 
 */
         public override void OnInspectorGUI()
         {
-            if(!target)
+            if (!target)
                 return;
 
             base.OnInspectorGUI();
 
-            GUI.backgroundColor = new Color(0.0f,0.0f,0.5f,1f);
-            GUILayout.BeginVertical("",boxStyleModified);
+            GUI.backgroundColor = new Color(0.0f, 0.0f, 0.5f, 1f);
+            GUILayout.BeginVertical("", boxStyleModified);
             GUI.backgroundColor = Color.white;
             EditorGUILayout.BeginHorizontal();
             myTarget.showModuleInspector = GUILayout.Toggle(myTarget.showModuleInspector, "Reflections", headerFoldout);
 
             GUILayout.FlexibleSpace();
-            if(GUILayout.Button("x", EditorStyles.miniButtonRight,GUILayout.Width(18), GUILayout.Height(18)))
+            if (GUILayout.Button("x", EditorStyles.miniButtonRight, GUILayout.Width(18), GUILayout.Height(18)))
             {
-                EnviroManager.instance.RemoveModule(EnviroManager.ModuleType.Reflections);
+                EnviroManager.instance.RemoveModule(EnviroManagerBase.ModuleType.Reflections);
                 DestroyImmediate(this);
                 return;
             }
 
             EditorGUILayout.EndHorizontal();
 
-            if(myTarget.showModuleInspector)
+            if (myTarget.showModuleInspector)
             {
                 //RenderDisableInputBox();
-                serializedObj.UpdateIfRequiredOrScript ();
+                serializedObj.UpdateIfRequiredOrScript();
                 EditorGUI.BeginChangeCheck();
 
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
-                myTarget.showReflectionControls = GUILayout.Toggle(myTarget.showReflectionControls, "Reflection Controls", headerFoldout);
-                if(myTarget.showReflectionControls)
+                myTarget.showReflectionControls = GUILayout.Toggle(myTarget.showReflectionControls,
+                    "Reflection Controls", headerFoldout);
+                if (myTarget.showReflectionControls)
                 {
                     EditorGUILayout.PropertyField(globalReflections);
                     GUILayout.Space(5);
@@ -90,59 +107,54 @@ namespace Enviro
                     EditorGUILayout.PropertyField(updateDefaultEnvironmentReflections);
                     GUILayout.Space(5);
                     EditorGUILayout.PropertyField(customRendering);
-                    if(myTarget.Settings.customRendering)
-                    EditorGUILayout.PropertyField(customRenderingTimeSlicing);
+                    if (myTarget.Settings.customRendering)
+                        EditorGUILayout.PropertyField(customRenderingTimeSlicing);
                     else
-                    EditorGUILayout.PropertyField(globalReflectionTimeSlicingMode);
+                        EditorGUILayout.PropertyField(globalReflectionTimeSlicingMode);
 #endif
                     GUILayout.Space(10);
                     EditorGUILayout.PropertyField(globalReflectionsUpdateOnGameTime);
-                    if(myTarget.Settings.globalReflectionsUpdateOnGameTime)
-                    EditorGUILayout.PropertyField(globalReflectionsTimeTreshold);
-                        GUILayout.Space(5);
+                    if (myTarget.Settings.globalReflectionsUpdateOnGameTime)
+                        EditorGUILayout.PropertyField(globalReflectionsTimeTreshold);
+                    GUILayout.Space(5);
                     EditorGUILayout.PropertyField(globalReflectionsUpdateOnPosition);
-                    if(myTarget.Settings.globalReflectionsUpdateOnPosition)
-                    EditorGUILayout.PropertyField(globalReflectionsPositionTreshold);
+                    if (myTarget.Settings.globalReflectionsUpdateOnPosition)
+                        EditorGUILayout.PropertyField(globalReflectionsPositionTreshold);
                 }
+
                 GUILayout.EndVertical();
 
 
                 /// Save Load
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 myTarget.showSaveLoad = GUILayout.Toggle(myTarget.showSaveLoad, "Save/Load", headerFoldout);
 
-                if(myTarget.showSaveLoad)
+                if (myTarget.showSaveLoad)
                 {
                     EditorGUILayout.PropertyField(preset);
-                    GUILayout.BeginHorizontal("",wrapStyle);
-                    if(myTarget.preset != null)
+                    GUILayout.BeginHorizontal("", wrapStyle);
+                    if (myTarget.preset != null)
                     {
-                        if(GUILayout.Button("Load"))
-                        {
-                            myTarget.LoadModuleValues();
-                        }
-                        if(GUILayout.Button("Save"))
-                        {
-                            myTarget.SaveModuleValues(myTarget.preset);
-                        }
+                        if (GUILayout.Button("Load")) myTarget.LoadModuleValues();
+                        if (GUILayout.Button("Save")) myTarget.SaveModuleValues(myTarget.preset);
                     }
-                    if(GUILayout.Button("Save As New"))
-                    {
-                        myTarget.SaveModuleValues();
-                    }
+
+                    if (GUILayout.Button("Save As New")) myTarget.SaveModuleValues();
                     GUILayout.EndHorizontal();
                 }
+
                 GUILayout.EndVertical();
                 /// Save Load End
 
-                ApplyChanges ();
+                ApplyChanges();
             }
+
             GUILayout.EndVertical();
 
-            if(myTarget.showModuleInspector)
-             GUILayout.Space(20);
+            if (myTarget.showModuleInspector)
+                GUILayout.Space(20);
         }
     }
 }

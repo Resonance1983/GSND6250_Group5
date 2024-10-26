@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine; 
+using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
 
 public class EnviroBaseInspector : Editor
-{ 
+{
     public SerializedObject serializedObj;
     public GUIStyle boxStyle;
     public GUIStyle boxStyleModified;
@@ -16,14 +16,14 @@ public class EnviroBaseInspector : Editor
     public GUIStyle headerFoldout;
     public GUIStyle popUpStyle;
     public GUIStyle integrationBox;
-    public GUIStyle helpButton; 
+    public GUIStyle helpButton;
     public bool showHelpBox;
 
-    public Color baseModuleColor = new Color(0.0f,0.0f,0.5f,1f);
-    public Color categoryModuleColor = new Color(0.5f,0.5f,0.0f,1f);
-    public Color thirdPartyModuleColor = new Color(0.0f,0.5f,0.5f,1f);
+    public Color baseModuleColor = new(0.0f, 0.0f, 0.5f, 1f);
+    public Color categoryModuleColor = new(0.5f, 0.5f, 0.0f, 1f);
+    public Color thirdPartyModuleColor = new(0.0f, 0.5f, 0.5f, 1f);
 
-    public void SetupGUIStyles ()
+    public void SetupGUIStyles()
     {
         if (boxStyle == null)
         {
@@ -88,8 +88,7 @@ public class EnviroBaseInspector : Editor
         {
             helpButton = new GUIStyle(EditorStyles.miniButtonRight);
             //helpButton.alignment = TextAnchor.UpperRight;
-            helpButton.margin = new RectOffset(100,0,0,0);
-
+            helpButton.margin = new RectOffset(100, 0, 0, 0);
         }
     }
 
@@ -98,70 +97,68 @@ public class EnviroBaseInspector : Editor
         //Help Box Button
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if(GUILayout.Button("?", EditorStyles.miniButton,GUILayout.Width(20), GUILayout.Height(20)))
+        if (GUILayout.Button("?", EditorStyles.miniButton, GUILayout.Width(20), GUILayout.Height(20)))
         {
-            if(showHelpBox)
+            if (showHelpBox)
                 showHelpBox = false;
             else
                 showHelpBox = true;
         }
+
         EditorGUILayout.EndHorizontal();
         //End Help Box Button
     }
 
     public void RenderHelpBox(string content)
     {
-       // GUILayout.BeginVertical("",EditorStyles.helpBox);
-        GUILayout.Label(content,EditorStyles.helpBox);
+        // GUILayout.BeginVertical("",EditorStyles.helpBox);
+        GUILayout.Label(content, EditorStyles.helpBox);
     }
 
-     public void RenderIntegrationTextBox(string content)
+    public void RenderIntegrationTextBox(string content)
     {
-       // GUILayout.BeginVertical("",EditorStyles.helpBox);
-        GUILayout.Label(content,integrationBox);
+        // GUILayout.BeginVertical("",EditorStyles.helpBox);
+        GUILayout.Label(content, integrationBox);
     }
 
     public void RenderDisableInputBox()
-    {  
-        if(Enviro.EnviroManager.instance != null)
+    {
+        if (Enviro.EnviroManager.instance != null)
         {
-           if (Enviro.EnviroManager.instance.Weather != null && Enviro.EnviroManager.instance.Quality != null)
-           {
-            //both
-             GUILayout.Label("Some settings are controlled from weather and quality modules!",EditorStyles.helpBox);
-           }
-           else if(Enviro.EnviroManager.instance.Weather != null && Enviro.EnviroManager.instance.Quality == null)
-           {
-            //Weather Only
-            GUILayout.Label("Some settings are controlled from weather modules!",EditorStyles.helpBox);
-           }
-           else if(Enviro.EnviroManager.instance.Weather == null && Enviro.EnviroManager.instance.Quality != null)
-           {
-            // Quality Only
-            GUILayout.Label("Some settings are controlled from quality modules!",EditorStyles.helpBox);
-           }
-           else
-           {
-            //Show Nothing
-           }
-     
+            if (Enviro.EnviroManager.instance.Weather != null && Enviro.EnviroManager.instance.Quality != null)
+            {
+                //both
+                GUILayout.Label("Some settings are controlled from weather and quality modules!", EditorStyles.helpBox);
+            }
+            else if (Enviro.EnviroManager.instance.Weather != null && Enviro.EnviroManager.instance.Quality == null)
+            {
+                //Weather Only
+                GUILayout.Label("Some settings are controlled from weather modules!", EditorStyles.helpBox);
+            }
+            else if (Enviro.EnviroManager.instance.Weather == null && Enviro.EnviroManager.instance.Quality != null)
+            {
+                // Quality Only
+                GUILayout.Label("Some settings are controlled from quality modules!", EditorStyles.helpBox);
+            }
+            else
+            {
+                //Show Nothing
+            }
         }
     }
 
-    public void ApplyChanges ()
-	{
-		if (EditorGUI.EndChangeCheck ()) {
-			serializedObj.ApplyModifiedProperties ();
-		}
-	}
+    public void ApplyChanges()
+    {
+        if (EditorGUI.EndChangeCheck()) serializedObj.ApplyModifiedProperties();
+    }
 
 
     public void AddDefineSymbol(string symbol)
     {
         var targets = Enum.GetValues(typeof(BuildTargetGroup))
-        .Cast<BuildTargetGroup>()
-        .Where(x => x != BuildTargetGroup.Unknown)
-        .Where(x => !IsObsolete(x));
+            .Cast<BuildTargetGroup>()
+            .Where(x => x != BuildTargetGroup.Unknown)
+            .Where(x => !IsObsolete(x));
 
         foreach (var target in targets)
         {
@@ -182,7 +179,7 @@ public class EnviroBaseInspector : Editor
     }
 
 
-    bool IsObsolete(BuildTargetGroup group)
+    private bool IsObsolete(BuildTargetGroup group)
     {
         var attrs = typeof(BuildTargetGroup)
             .GetField(group.ToString())
@@ -193,12 +190,13 @@ public class EnviroBaseInspector : Editor
 
     public void RemoveDefineSymbol(string symbol)
     {
-        string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+        var symbols =
+            PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
 
         var targets = Enum.GetValues(typeof(BuildTargetGroup))
-        .Cast<BuildTargetGroup>()
-        .Where(x => x != BuildTargetGroup.Unknown)
-        .Where(x => !IsObsolete(x));
+            .Cast<BuildTargetGroup>()
+            .Where(x => x != BuildTargetGroup.Unknown)
+            .Where(x => !IsObsolete(x));
 
         foreach (var target in targets)
         {

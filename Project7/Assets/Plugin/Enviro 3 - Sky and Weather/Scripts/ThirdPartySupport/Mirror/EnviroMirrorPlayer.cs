@@ -16,10 +16,10 @@ namespace Enviro
 	public class EnviroMirrorPlayer : NetworkBehaviour 
 	{
 #else
-	public class EnviroMirrorPlayer : MonoBehaviour 
-	{
+    public class EnviroMirrorPlayer : MonoBehaviour
+    {
 #endif
-	#if ENVIRO_MIRROR_SUPPORT
+#if ENVIRO_MIRROR_SUPPORT
 		public bool assignOnStart = true;
 		public bool findSceneCamera = true;
 
@@ -83,6 +83,6 @@ namespace Enviro
 				EnviroManager.instance.Weather.ChangeWeatherInstant(EnviroManager.instance.Weather.Settings.weatherTypes[weather]);
 		}
 
-	#endif
-	}
+#endif
+    }
 }

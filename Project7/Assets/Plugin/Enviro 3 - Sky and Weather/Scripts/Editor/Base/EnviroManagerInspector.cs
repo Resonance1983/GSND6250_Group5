@@ -3,19 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Enviro{
+namespace Enviro
+{
     [CustomEditor(typeof(EnviroManager))]
     public class EnviroManagerInspector : EnviroBaseInspector
     {
         private EnviroManager myTarget;
 
-        private Editor currentTimeModuleEditor, currentSkyModuleEditor, currentLightingModuleEditor, currentReflectionsModuleEditor, currentFogModuleEditor, currentVolumetricCloudModuleEditor,currentFlatCloudModuleEditor,currentWeatherModuleEditor,currentAuroraModuleEditor,currentLightningModuleEditor, currentAudioModuleEditor,currentEnvironmentModuleEditor,currentEffectsModuleEditor ,currentQualityModuleEditor;
-        private SerializedProperty configuration, modules, Camera, CameraTag, dontDestroyOnLoad ,worldAnchor ,optionalFollowTransform;
-        private SerializedProperty sunRotationX,sunRotationY,moonRotationX,moonRotationY,dayNightSwitch;
-        //Events
-        private SerializedProperty onHourPassedActions, onDayPassedActions, onYearPassedActions, onWeatherChangedActions, onSeasonChangedActions, onNightActions, onDayActions;
+        private Editor currentTimeModuleEditor,
+            currentSkyModuleEditor,
+            currentLightingModuleEditor,
+            currentReflectionsModuleEditor,
+            currentFogModuleEditor,
+            currentVolumetricCloudModuleEditor,
+            currentFlatCloudModuleEditor,
+            currentWeatherModuleEditor,
+            currentAuroraModuleEditor,
+            currentLightningModuleEditor,
+            currentAudioModuleEditor,
+            currentEnvironmentModuleEditor,
+            currentEffectsModuleEditor,
+            currentQualityModuleEditor;
 
-        void OnEnable()
+        private SerializedProperty configuration,
+            modules,
+            Camera,
+            CameraTag,
+            dontDestroyOnLoad,
+            worldAnchor,
+            optionalFollowTransform;
+
+        private SerializedProperty sunRotationX, sunRotationY, moonRotationX, moonRotationY, dayNightSwitch;
+
+        //Events
+        private SerializedProperty onHourPassedActions,
+            onDayPassedActions,
+            onYearPassedActions,
+            onWeatherChangedActions,
+            onSeasonChangedActions,
+            onNightActions,
+            onDayActions;
+
+        private void OnEnable()
         {
             myTarget = (EnviroManager)target;
             serializedObj = new SerializedObject(myTarget);
@@ -45,7 +74,7 @@ namespace Enviro{
             SetupGUIStyles();
 
             GUILayout.BeginVertical("", boxStyle);
-            GUILayout.Label("Enviro - Sky and Weather Manager",headerStyleMid);
+            GUILayout.Label("Enviro - Sky and Weather Manager", headerStyleMid);
             GUILayout.Space(5);
             GUILayout.Label("Version: 3.1.7", headerStyleMid);
 
@@ -53,53 +82,51 @@ namespace Enviro{
             //Help Box Button
             //RenderHelpBoxButton();
 
-           // if(showHelpBox)
-           // RenderHelpBox("This is a help text test!");
+            // if(showHelpBox)
+            // RenderHelpBox("This is a help text test!");
 
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical("",boxStyle);
+            GUILayout.BeginVertical("", boxStyle);
             myTarget.showSetup = GUILayout.Toggle(myTarget.showSetup, "Setup", headerFoldout);
 
             EditorGUI.BeginChangeCheck();
 
-            if(myTarget.showSetup)
+            if (myTarget.showSetup)
             {
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUILayout.Label("Camera Setup", headerStyle);
 
-               // GUILayout.Space(10);
-               // GUILayout.Label("Main Camera", headerStyle);
+                // GUILayout.Space(10);
+                // GUILayout.Label("Main Camera", headerStyle);
                 EditorGUILayout.PropertyField(Camera);
 
-                if(myTarget.Camera == null)
-                   CameraTag.stringValue = EditorGUILayout.TagField("Camera Tag", CameraTag.stringValue);
+                if (myTarget.Camera == null)
+                    CameraTag.stringValue = EditorGUILayout.TagField("Camera Tag", CameraTag.stringValue);
 
                 GUILayout.Space(10);
                 GUILayout.Label("Additional Cameras", headerStyle);
                 GUILayout.Space(5);
-                if (GUILayout.Button ("Add"))
-                {
-                        myTarget.Cameras.Add (new EnviroCameras());
-                }
+                if (GUILayout.Button("Add")) myTarget.Cameras.Add(new EnviroCameras());
                 GUILayout.Space(5);
-                for (int i = 0; i < myTarget.Cameras.Count; i++)
+                for (var i = 0; i < myTarget.Cameras.Count; i++)
                 {
                     GUILayout.BeginVertical("", boxStyleModified);
-                    myTarget.Cameras[i].camera = (Camera)EditorGUILayout.ObjectField ("Camera", myTarget.Cameras[i].camera, typeof(Camera), true);
-                    myTarget.Cameras[i].quality = (EnviroQuality)EditorGUILayout.ObjectField ("Quality", myTarget.Cameras[i].quality, typeof(EnviroQuality), true);
-                    myTarget.Cameras[i].resetMatrix = EditorGUILayout.Toggle("Reset Matrix",  myTarget.Cameras[i].resetMatrix);
-                    
-                    if (GUILayout.Button ("Remove"))
-                    {
-                        myTarget.Cameras.RemoveAt (i);
-                    }
+                    myTarget.Cameras[i].camera = (Camera)EditorGUILayout.ObjectField("Camera",
+                        myTarget.Cameras[i].camera, typeof(Camera), true);
+                    myTarget.Cameras[i].quality = (EnviroQuality)EditorGUILayout.ObjectField("Quality",
+                        myTarget.Cameras[i].quality, typeof(EnviroQuality), true);
+                    myTarget.Cameras[i].resetMatrix =
+                        EditorGUILayout.Toggle("Reset Matrix", myTarget.Cameras[i].resetMatrix);
 
-                    GUILayout.EndVertical(); 
+                    if (GUILayout.Button("Remove")) myTarget.Cameras.RemoveAt(i);
+
+                    GUILayout.EndVertical();
                 }
+
                 GUILayout.EndVertical();
 
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUILayout.Label("General Setup", headerStyle);
                 EditorGUILayout.PropertyField(dontDestroyOnLoad);
                 EditorGUILayout.PropertyField(worldAnchor);
@@ -108,356 +135,325 @@ namespace Enviro{
 
                 GUILayout.BeginVertical("", boxStyleModified);
 
-    #if ENVIRO_HDRP
+#if ENVIRO_HDRP
                 GUILayout.Label("Render Pipeline:   HDRP", headerStyle);
-    #elif ENVIRO_URP
+#elif ENVIRO_URP
                 GUILayout.Label("Render Pipeline:   URP", headerStyle);
-    #else
+#else
                 GUILayout.Label("Render Pipeline:   Legacy", headerStyle);
-    #endif
+#endif
 
                 GUILayout.Space(10);
-    #if !ENVIRO_HDRP
+#if !ENVIRO_HDRP
                 if (GUILayout.Button("Activate HDRP Support"))
-                    {
-                        AddDefineSymbol("ENVIRO_HDRP");
-                        RemoveDefineSymbol("ENVIRO_URP");
-                    }
-    #endif
+                {
+                    AddDefineSymbol("ENVIRO_HDRP");
+                    RemoveDefineSymbol("ENVIRO_URP");
+                }
+#endif
 
-    #if !ENVIRO_URP
-                    if (GUILayout.Button("Activate URP Support"))
-                    {
-                        AddDefineSymbol("ENVIRO_URP");
-                        RemoveDefineSymbol("ENVIRO_HDRP");
-                    }
-    #endif
+#if !ENVIRO_URP
+                if (GUILayout.Button("Activate URP Support"))
+                {
+                    AddDefineSymbol("ENVIRO_URP");
+                    RemoveDefineSymbol("ENVIRO_HDRP");
+                }
+#endif
 
-    #if ENVIRO_URP || ENVIRO_HDRP
+#if ENVIRO_URP || ENVIRO_HDRP
                 if (GUILayout.Button("Activate Legacy Support"))
                     {
                         RemoveDefineSymbol("ENVIRO_URP");
                         RemoveDefineSymbol("ENVIRO_HDRP");
                     }
-    #endif
+#endif
                 GUILayout.EndVertical();
             }
+
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical("", boxStyle);
             myTarget.showModules = GUILayout.Toggle(myTarget.showModules, "Modules", headerFoldout);
-            if(myTarget.showModules)
+            if (myTarget.showModules)
             {
-
-            if(myTarget.configuration == null)
-            {
-                GUILayout.Label("Please assign or create a new configuration.");
-                EditorGUILayout.PropertyField(configuration);
-                    if(GUILayout.Button("Create new Configuration"))
+                if (myTarget.configuration == null)
+                {
+                    GUILayout.Label("Please assign or create a new configuration.");
+                    EditorGUILayout.PropertyField(configuration);
+                    if (GUILayout.Button("Create new Configuration"))
                     {
                         myTarget.configuration = EnviroConfigurationCreation.CreateMyAsset();
                         serializedObj.Update();
                     }
-            }
-            else
-            {
-                GUILayout.BeginVertical("", boxStyleModified);
-
-                if(!Application.isPlaying)
-                EditorGUILayout.PropertyField(configuration);
-                  if(GUILayout.Button("Save all Modules"))
-                    {
-                        myTarget.SaveAllModules();
-                    }
-                if(GUILayout.Button("Load all Modules"))
-                    {
-                        myTarget.LoadAllModules();
-                    }
-
-                GUILayout.EndVertical();
-
-                GUILayout.BeginVertical("", wrapStyle);
-                GUILayout.BeginHorizontal("", headerStyle);
-
-                EditorGUI.BeginDisabledGroup(myTarget.Time != null);
-                if(GUILayout.Button("Time"))
-                {
-                    if (myTarget.Time == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Time);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Sky != null);
-                if(GUILayout.Button("Sky"))
-                {
-                    if (myTarget.Sky == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Sky);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Lighting != null);
-                if(GUILayout.Button("Lighting"))
-                {
-                    if (myTarget.Lighting == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Lighting);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Reflections != null);
-                if(GUILayout.Button("Reflections"))
-                {
-                    if (myTarget.Reflections == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Reflections);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Fog != null);
-                if(GUILayout.Button("Fog"))
-                {
-                    if (myTarget.Fog == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Fog);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.VolumetricClouds != null);
-                if(GUILayout.Button("Volumetric Clouds"))
-                { 
-                    if (myTarget.VolumetricClouds == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.VolumetricClouds);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.FlatClouds != null);
-                if(GUILayout.Button("Flat Clouds"))
-                {
-                    if (myTarget.FlatClouds == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.FlatClouds);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Aurora != null);
-                if(GUILayout.Button("Aurora"))
-                {
-                    if (myTarget.Aurora == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Aurora);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                GUILayout.EndHorizontal();
-
-                //////////////////////////////////////
-
-                GUILayout.BeginHorizontal("", headerStyle);
-
-
-                EditorGUI.BeginDisabledGroup(myTarget.Environment != null);
-                if(GUILayout.Button("Environment"))
-                {
-                    if (myTarget.Environment == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Environment);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Lightning != null);
-                if(GUILayout.Button("Lightning"))
-                {
-                    if (myTarget.Lightning == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Lightning);
-                }
-                EditorGUI.EndDisabledGroup();
-
-
-                EditorGUI.BeginDisabledGroup(myTarget.Weather != null);
-                if(GUILayout.Button("Weather"))
-                {
-                    if (myTarget.Weather == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Weather);
-                }
-                EditorGUI.EndDisabledGroup();
-
-
-                EditorGUI.BeginDisabledGroup(myTarget.Audio != null);
-                if(GUILayout.Button("Audio"))
-                {
-                    if (myTarget.Audio == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Audio);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Effects != null);
-                if(GUILayout.Button("Effects"))
-                {
-                    if (myTarget.Effects == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Effects);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(myTarget.Quality != null);
-                if(GUILayout.Button("Quality"))
-                {
-                    if (myTarget.Quality == null)
-                    myTarget.AddModule(EnviroManager.ModuleType.Quality);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                GUILayout.EndHorizontal();
-                GUILayout.EndVertical();
-
-
-    /////////Modules Start
-                GUILayout.Space(10);
-                if(myTarget.Time != null)
-                {
-                    if(currentTimeModuleEditor == null)
-                    currentTimeModuleEditor = Editor.CreateEditor(myTarget.Time);
-
-                    currentTimeModuleEditor.OnInspectorGUI();
                 }
                 else
                 {
+                    GUILayout.BeginVertical("", boxStyleModified);
 
-                    GUI.backgroundColor = baseModuleColor;
-                    GUILayout.BeginVertical("",boxStyleModified);
-                    GUI.backgroundColor = Color.white;
-                    EditorGUILayout.BeginHorizontal();
-                    myTarget.showNonTimeControls = GUILayout.Toggle(myTarget.showNonTimeControls, "Sun and Moon Controls", headerFoldout);
-                    EditorGUILayout.EndHorizontal();
-                    if(myTarget.showNonTimeControls)
-                    {
-                        EditorGUILayout.LabelField("This module will control your sun and moon position when no time module is used.");
-                        serializedObj.UpdateIfRequiredOrScript ();
-                        EditorGUI.BeginChangeCheck();
-                        GUI.backgroundColor = categoryModuleColor;
-                        GUILayout.BeginVertical("",boxStyleModified);
-                        GUI.backgroundColor = Color.white;
+                    if (!Application.isPlaying)
+                        EditorGUILayout.PropertyField(configuration);
+                    if (GUILayout.Button("Save all Modules")) myTarget.SaveAllModules();
+                    if (GUILayout.Button("Load all Modules")) myTarget.LoadAllModules();
 
-                        EditorGUILayout.PropertyField(sunRotationX);
-                        EditorGUILayout.PropertyField(sunRotationY);
-                        EditorGUILayout.PropertyField(moonRotationX);
-                        EditorGUILayout.PropertyField(moonRotationY);
-                        GUILayout.Space(5);
-                        EditorGUILayout.PropertyField(dayNightSwitch);
-                        GUILayout.EndVertical();
-                    }
                     GUILayout.EndVertical();
 
-                    if(myTarget.showNonTimeControls)
+                    GUILayout.BeginVertical("", wrapStyle);
+                    GUILayout.BeginHorizontal("", headerStyle);
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Time != null);
+                    if (GUILayout.Button("Time"))
+                        if (myTarget.Time == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Time);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Sky != null);
+                    if (GUILayout.Button("Sky"))
+                        if (myTarget.Sky == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Sky);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Lighting != null);
+                    if (GUILayout.Button("Lighting"))
+                        if (myTarget.Lighting == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Lighting);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Reflections != null);
+                    if (GUILayout.Button("Reflections"))
+                        if (myTarget.Reflections == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Reflections);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Fog != null);
+                    if (GUILayout.Button("Fog"))
+                        if (myTarget.Fog == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Fog);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.VolumetricClouds != null);
+                    if (GUILayout.Button("Volumetric Clouds"))
+                        if (myTarget.VolumetricClouds == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.VolumetricClouds);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.FlatClouds != null);
+                    if (GUILayout.Button("Flat Clouds"))
+                        if (myTarget.FlatClouds == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.FlatClouds);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Aurora != null);
+                    if (GUILayout.Button("Aurora"))
+                        if (myTarget.Aurora == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Aurora);
+                    EditorGUI.EndDisabledGroup();
+
+                    GUILayout.EndHorizontal();
+
+                    //////////////////////////////////////
+
+                    GUILayout.BeginHorizontal("", headerStyle);
+
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Environment != null);
+                    if (GUILayout.Button("Environment"))
+                        if (myTarget.Environment == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Environment);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Lightning != null);
+                    if (GUILayout.Button("Lightning"))
+                        if (myTarget.Lightning == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Lightning);
+                    EditorGUI.EndDisabledGroup();
+
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Weather != null);
+                    if (GUILayout.Button("Weather"))
+                        if (myTarget.Weather == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Weather);
+                    EditorGUI.EndDisabledGroup();
+
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Audio != null);
+                    if (GUILayout.Button("Audio"))
+                        if (myTarget.Audio == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Audio);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Effects != null);
+                    if (GUILayout.Button("Effects"))
+                        if (myTarget.Effects == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Effects);
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(myTarget.Quality != null);
+                    if (GUILayout.Button("Quality"))
+                        if (myTarget.Quality == null)
+                            myTarget.AddModule(EnviroManagerBase.ModuleType.Quality);
+                    EditorGUI.EndDisabledGroup();
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
+
+
+                    /////////Modules Start
                     GUILayout.Space(10);
-                }
+                    if (myTarget.Time != null)
+                    {
+                        if (currentTimeModuleEditor == null)
+                            currentTimeModuleEditor = CreateEditor(myTarget.Time);
 
-                if(myTarget.Lighting != null)
-                {
-                    if(currentLightingModuleEditor == null)
-                    currentLightingModuleEditor = Editor.CreateEditor(myTarget.Lighting);
+                        currentTimeModuleEditor.OnInspectorGUI();
+                    }
+                    else
+                    {
+                        GUI.backgroundColor = baseModuleColor;
+                        GUILayout.BeginVertical("", boxStyleModified);
+                        GUI.backgroundColor = Color.white;
+                        EditorGUILayout.BeginHorizontal();
+                        myTarget.showNonTimeControls = GUILayout.Toggle(myTarget.showNonTimeControls,
+                            "Sun and Moon Controls", headerFoldout);
+                        EditorGUILayout.EndHorizontal();
+                        if (myTarget.showNonTimeControls)
+                        {
+                            EditorGUILayout.LabelField(
+                                "This module will control your sun and moon position when no time module is used.");
+                            serializedObj.UpdateIfRequiredOrScript();
+                            EditorGUI.BeginChangeCheck();
+                            GUI.backgroundColor = categoryModuleColor;
+                            GUILayout.BeginVertical("", boxStyleModified);
+                            GUI.backgroundColor = Color.white;
 
-                    currentLightingModuleEditor.OnInspectorGUI();
-                }
+                            EditorGUILayout.PropertyField(sunRotationX);
+                            EditorGUILayout.PropertyField(sunRotationY);
+                            EditorGUILayout.PropertyField(moonRotationX);
+                            EditorGUILayout.PropertyField(moonRotationY);
+                            GUILayout.Space(5);
+                            EditorGUILayout.PropertyField(dayNightSwitch);
+                            GUILayout.EndVertical();
+                        }
 
-                if(myTarget.Reflections != null)
-                {
-                    if(currentReflectionsModuleEditor == null)
-                    currentReflectionsModuleEditor = Editor.CreateEditor(myTarget.Reflections);
+                        GUILayout.EndVertical();
 
-                    currentReflectionsModuleEditor.OnInspectorGUI();
-                }
+                        if (myTarget.showNonTimeControls)
+                            GUILayout.Space(10);
+                    }
 
-                if(myTarget.Sky != null)
-                {
-                    if(currentSkyModuleEditor == null)
-                    currentSkyModuleEditor = Editor.CreateEditor(myTarget.Sky);
+                    if (myTarget.Lighting != null)
+                    {
+                        if (currentLightingModuleEditor == null)
+                            currentLightingModuleEditor = CreateEditor(myTarget.Lighting);
 
-                    currentSkyModuleEditor.OnInspectorGUI();
-                }
+                        currentLightingModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Fog != null)
-                {
-                    if(currentFogModuleEditor == null)
-                    currentFogModuleEditor = Editor.CreateEditor(myTarget.Fog);
+                    if (myTarget.Reflections != null)
+                    {
+                        if (currentReflectionsModuleEditor == null)
+                            currentReflectionsModuleEditor = CreateEditor(myTarget.Reflections);
 
-                    currentFogModuleEditor.OnInspectorGUI();
-                }
+                        currentReflectionsModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.VolumetricClouds != null)
-                {
-                    if(currentVolumetricCloudModuleEditor == null)
-                    currentVolumetricCloudModuleEditor = Editor.CreateEditor(myTarget.VolumetricClouds);
+                    if (myTarget.Sky != null)
+                    {
+                        if (currentSkyModuleEditor == null)
+                            currentSkyModuleEditor = CreateEditor(myTarget.Sky);
 
-                    currentVolumetricCloudModuleEditor.OnInspectorGUI();
-                }
+                        currentSkyModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.FlatClouds != null)
-                {
-                    if(currentFlatCloudModuleEditor == null)
-                    currentFlatCloudModuleEditor = Editor.CreateEditor(myTarget.FlatClouds);
+                    if (myTarget.Fog != null)
+                    {
+                        if (currentFogModuleEditor == null)
+                            currentFogModuleEditor = CreateEditor(myTarget.Fog);
 
-                    currentFlatCloudModuleEditor.OnInspectorGUI();
-                }
+                        currentFogModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Aurora != null)
-                {
-                    if(currentAuroraModuleEditor == null)
-                    currentAuroraModuleEditor = Editor.CreateEditor(myTarget.Aurora);
+                    if (myTarget.VolumetricClouds != null)
+                    {
+                        if (currentVolumetricCloudModuleEditor == null)
+                            currentVolumetricCloudModuleEditor = CreateEditor(myTarget.VolumetricClouds);
 
-                    currentAuroraModuleEditor.OnInspectorGUI();
-                }
+                        currentVolumetricCloudModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Lightning != null)
-                {
-                    if(currentLightningModuleEditor == null)
-                    currentLightningModuleEditor = Editor.CreateEditor(myTarget.Lightning);
+                    if (myTarget.FlatClouds != null)
+                    {
+                        if (currentFlatCloudModuleEditor == null)
+                            currentFlatCloudModuleEditor = CreateEditor(myTarget.FlatClouds);
 
-                    currentLightningModuleEditor.OnInspectorGUI();
-                }
+                        currentFlatCloudModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Environment != null)
-                {
-                    if(currentEnvironmentModuleEditor == null)
-                    currentEnvironmentModuleEditor = Editor.CreateEditor(myTarget.Environment);
+                    if (myTarget.Aurora != null)
+                    {
+                        if (currentAuroraModuleEditor == null)
+                            currentAuroraModuleEditor = CreateEditor(myTarget.Aurora);
 
-                    currentEnvironmentModuleEditor.OnInspectorGUI();
-                }
+                        currentAuroraModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Weather != null)
-                {
-                    if(currentWeatherModuleEditor == null)
-                    currentWeatherModuleEditor = Editor.CreateEditor(myTarget.Weather);
+                    if (myTarget.Lightning != null)
+                    {
+                        if (currentLightningModuleEditor == null)
+                            currentLightningModuleEditor = CreateEditor(myTarget.Lightning);
 
-                    currentWeatherModuleEditor.OnInspectorGUI();
-                }
+                        currentLightningModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Audio != null)
-                {
-                    if(currentAudioModuleEditor == null)
-                    currentAudioModuleEditor = Editor.CreateEditor(myTarget.Audio);
+                    if (myTarget.Environment != null)
+                    {
+                        if (currentEnvironmentModuleEditor == null)
+                            currentEnvironmentModuleEditor = CreateEditor(myTarget.Environment);
 
-                    currentAudioModuleEditor.OnInspectorGUI();
-                }
+                        currentEnvironmentModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Effects != null)
-                {
-                    if(currentEffectsModuleEditor == null)
-                    currentEffectsModuleEditor = Editor.CreateEditor(myTarget.Effects);
+                    if (myTarget.Weather != null)
+                    {
+                        if (currentWeatherModuleEditor == null)
+                            currentWeatherModuleEditor = CreateEditor(myTarget.Weather);
 
-                    currentEffectsModuleEditor.OnInspectorGUI();
-                }
+                        currentWeatherModuleEditor.OnInspectorGUI();
+                    }
 
-                if(myTarget.Quality != null)
-                {
-                    if(currentQualityModuleEditor == null)
-                    currentQualityModuleEditor = Editor.CreateEditor(myTarget.Quality);
+                    if (myTarget.Audio != null)
+                    {
+                        if (currentAudioModuleEditor == null)
+                            currentAudioModuleEditor = CreateEditor(myTarget.Audio);
 
-                    currentQualityModuleEditor.OnInspectorGUI();
+                        currentAudioModuleEditor.OnInspectorGUI();
+                    }
+
+                    if (myTarget.Effects != null)
+                    {
+                        if (currentEffectsModuleEditor == null)
+                            currentEffectsModuleEditor = CreateEditor(myTarget.Effects);
+
+                        currentEffectsModuleEditor.OnInspectorGUI();
+                    }
+
+                    if (myTarget.Quality != null)
+                    {
+                        if (currentQualityModuleEditor == null)
+                            currentQualityModuleEditor = CreateEditor(myTarget.Quality);
+
+                        currentQualityModuleEditor.OnInspectorGUI();
+                    }
                 }
             }
-            }
+
             GUILayout.EndVertical();
 
             //Modules End
 
-            GUILayout.BeginVertical("",boxStyle);
+            GUILayout.BeginVertical("", boxStyle);
             myTarget.showEvents = GUILayout.Toggle(myTarget.showEvents, "Events", headerFoldout);
 
-            if(myTarget.showEvents)
+            if (myTarget.showEvents)
             {
                 GUI.backgroundColor = thirdPartyModuleColor;
                 GUILayout.BeginVertical("", boxStyleModified);
@@ -472,14 +468,15 @@ namespace Enviro{
                 GUILayout.Space(5);
                 EditorGUILayout.PropertyField(onDayActions);
                 EditorGUILayout.PropertyField(onNightActions);
-                 GUILayout.EndVertical();
+                GUILayout.EndVertical();
             }
+
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical("",boxStyle);
+            GUILayout.BeginVertical("", boxStyle);
             myTarget.showThirdParty = GUILayout.Toggle(myTarget.showThirdParty, "Third Party Support", headerFoldout);
 
-            if(myTarget.showThirdParty)
+            if (myTarget.showThirdParty)
             {
                 GUILayout.Space(5);
 
@@ -489,7 +486,6 @@ namespace Enviro{
                 GUI.backgroundColor = Color.white;
                 GUILayout.Space(20);
 #if WORLDAPI_PRESENT
-
                 //GUILayout.Label("World Manager API detected!", headerStyle);
                 //GUILayout.Space(5);
                 RenderIntegrationTextBox("You can add support for WAPI from the ('Components' -> 'Enviro 3' -> 'Integrations' -> 'WAPI') menu.");
@@ -503,7 +499,8 @@ namespace Enviro{
                 GUILayout.BeginVertical("MicroSplat", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 GUILayout.Space(20);
-                RenderIntegrationTextBox("You can add support for MicroSplat and Better Lit Shaders from the ('Components' -> 'Enviro 3' -> 'Integrations' -> 'Microsplat') menu.");
+                RenderIntegrationTextBox(
+                    "You can add support for MicroSplat and Better Lit Shaders from the ('Components' -> 'Enviro 3' -> 'Integrations' -> 'Microsplat') menu.");
                 GUILayout.EndVertical();
                 //////////
 
@@ -523,14 +520,8 @@ namespace Enviro{
                     RemoveDefineSymbol("ENVIRO_MIRROR_SUPPORT");
                 }
 #else
-                if (GUILayout.Button("Activate Mirror Support"))
-                {
-                    AddDefineSymbol("ENVIRO_MIRROR_SUPPORT");
-                }
-                if (GUILayout.Button("Deactivate Mirror Support"))
-                {
-                    RemoveDefineSymbol("ENVIRO_MIRROR_SUPPORT");
-                }
+                if (GUILayout.Button("Activate Mirror Support")) AddDefineSymbol("ENVIRO_MIRROR_SUPPORT");
+                if (GUILayout.Button("Deactivate Mirror Support")) RemoveDefineSymbol("ENVIRO_MIRROR_SUPPORT");
 #endif
                 GUILayout.EndVertical();
                 //////////
@@ -548,19 +539,13 @@ namespace Enviro{
                     RemoveDefineSymbol("ENVIRO_PHOTON_SUPPORT");
                 }
 #else
-                if (GUILayout.Button("Activate Photon Support"))
-                {
-                    AddDefineSymbol("ENVIRO_PHOTON_SUPPORT");
-                }
-                if (GUILayout.Button("Deactivate Photon Support"))
-                {
-                    RemoveDefineSymbol("ENVIRO_PHOTON_SUPPORT");
-                }
+                if (GUILayout.Button("Activate Photon Support")) AddDefineSymbol("ENVIRO_PHOTON_SUPPORT");
+                if (GUILayout.Button("Deactivate Photon Support")) RemoveDefineSymbol("ENVIRO_PHOTON_SUPPORT");
 #endif
                 GUILayout.EndVertical();
                 //////////
-
             }
+
             GUILayout.EndVertical();
             ApplyChanges();
         }

@@ -7,17 +7,16 @@ using Photon.Pun;
 
 namespace Enviro
 {
-	#if ENVIRO_PHOTON_SUPPORT
+#if ENVIRO_PHOTON_SUPPORT
 	[RequireComponent(typeof (PhotonView))]
 	[AddComponentMenu("Enviro 3/Integrations/Photon Integration")]
 	public class EnviroPhotonIntegration : MonoBehaviourPunCallbacks, IPunObservable
-	{ 
-	#else
-	public class EnviroPhotonIntegration : MonoBehaviour
 	{
-
-	#endif
-	#if ENVIRO_PHOTON_SUPPORT
+#else
+    public class EnviroPhotonIntegration : MonoBehaviour
+    {
+#endif
+#if ENVIRO_PHOTON_SUPPORT
 		public ViewSynchronization synchronizationType = ViewSynchronization.Unreliable;
 		public float updateSmoothing = 15f;
 		private float networkHours;
@@ -183,6 +182,6 @@ namespace Enviro
 			}
 
 		}
-	#endif
-	}
+#endif
+    }
 }

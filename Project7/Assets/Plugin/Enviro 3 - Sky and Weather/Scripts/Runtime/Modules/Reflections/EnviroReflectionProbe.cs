@@ -6,31 +6,37 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 #endif
 
-namespace Enviro 
+namespace Enviro
 {
     [AddComponentMenu("Enviro 3/Reflection Probe")]
-    [RequireComponent(typeof(ReflectionProbe)), ExecuteInEditMode]
+    [RequireComponent(typeof(ReflectionProbe))]
+    [ExecuteInEditMode]
     public class EnviroReflectionProbe : MonoBehaviour
     {
         #region Public Var
+
         #region Standalone Settings
+
         public bool standalone = false;
         public bool updateReflectionOnGameTime = true;
         public float reflectionsUpdateTreshhold = 0.025f;
         public bool useTimeSlicing = true;
+
         #endregion
+
         public Camera renderCam;
-        [HideInInspector]
-        public ReflectionProbe myProbe;
+        [HideInInspector] public ReflectionProbe myProbe;
         public bool customRendering = false;
 
-    #if !ENVIRO_HDRP
+#if !ENVIRO_HDRP
         private EnviroRenderer enviroRenderer;
-    #endif
+#endif
         public bool useFog = false;
+
         #endregion
 
         #region Private Var
+
         // Privates
         public Camera bakingCam;
         public int renderId = -1;
@@ -48,27 +54,29 @@ namespace Enviro
 
         private int renderID;
 
-    #if ENVIRO_HDRP
+#if ENVIRO_HDRP
         public HDProbe hdprobe;
-    #endif
+#endif
         private static Quaternion[] orientations = new Quaternion[]
         {
-                Quaternion.LookRotation(Vector3.right, Vector3.down),
-                Quaternion.LookRotation(Vector3.left, Vector3.down),
-                Quaternion.LookRotation(Vector3.up, Vector3.forward),
-                Quaternion.LookRotation(Vector3.down, Vector3.back),
-                Quaternion.LookRotation(Vector3.forward, Vector3.down),
-                Quaternion.LookRotation(Vector3.back, Vector3.down)
+            Quaternion.LookRotation(Vector3.right, Vector3.down),
+            Quaternion.LookRotation(Vector3.left, Vector3.down),
+            Quaternion.LookRotation(Vector3.up, Vector3.forward),
+            Quaternion.LookRotation(Vector3.down, Vector3.back),
+            Quaternion.LookRotation(Vector3.forward, Vector3.down),
+            Quaternion.LookRotation(Vector3.back, Vector3.down)
         };
 
         private double lastRelfectionUpdate;
+
         #endregion
+
         ////////
-        void OnEnable()
+        private void OnEnable()
         {
             myProbe = GetComponent<ReflectionProbe>();
 
-    #if ENVIRO_HDRP
+#if ENVIRO_HDRP
             if (EnviroManager.instance != null)
             {
                 hdprobe = GetComponent<HDProbe>();
@@ -98,7 +106,7 @@ namespace Enviro
                     }
                 }
             }
-    #else
+#else
 
             if (!standalone && myProbe != null)
                 myProbe.enabled = true;
@@ -112,7 +120,7 @@ namespace Enviro
                 CreateTexturesAndMaterial();
                 CreateRenderCamera();
                 currentRes = myProbe.resolution;
-                StartCoroutine(RefreshFirstTime());        
+                StartCoroutine(RefreshFirstTime());
             }
             else
             {
@@ -121,17 +129,19 @@ namespace Enviro
                 //StartCoroutine(RefreshUnity());
                 renderId = myProbe.RenderProbe();
             }
-    #endif
+#endif
         }
-        void OnDisable()
+
+        private void OnDisable()
         {
             Cleanup();
 
             if (!standalone && myProbe != null)
                 myProbe.enabled = false;
 
-            RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
+            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Skybox;
         }
+
         private void Cleanup()
         {
             if (refreshing != null)
@@ -154,6 +164,7 @@ namespace Enviro
             if (renderTexture != null)
                 DestroyImmediate(renderTexture);
         }
+
         // Creation
         private void CreateRenderCamera()
         {
@@ -174,37 +185,35 @@ namespace Enviro
                 renderCam.targetTexture = cubemap;
                 renderCam.enabled = false;
 
-    #if VEGETATION_STUDIO_PRO
+#if VEGETATION_STUDIO_PRO
         //     VegetationStudioManager.Instance.AddCamera(renderCam);
-    #endif
+#endif
 
-    #if !ENVIRO_HDRP
-                if (EnviroManager.instance != null)
-                {
-                    enviroRenderer = renderCamObj.AddComponent<EnviroRenderer>();
-                }
-    #endif
+#if !ENVIRO_HDRP
+                if (EnviroManager.instance != null) enviroRenderer = renderCamObj.AddComponent<EnviroRenderer>();
+#endif
             }
         }
+
         private void UpdateCameraSettings()
         {
             if (renderCam != null)
             {
                 renderCam.cullingMask = myProbe.cullingMask;
-    #if !ENVIRO_HDRP
-              if (EnviroManager.instance != null)
+#if !ENVIRO_HDRP
+                if (EnviroManager.instance != null)
                 {
-                 //Update Quality
+                    //Update Quality
                 }
-    #endif
-
+#endif
             }
         }
+
         private Camera CreateBakingCamera()
         {
-            GameObject tempCam = new GameObject();
+            var tempCam = new GameObject();
             tempCam.name = "Reflection Probe Cam";
-            Camera cam = tempCam.AddComponent<Camera>();
+            var cam = tempCam.AddComponent<Camera>();
             cam.enabled = false;
             cam.gameObject.SetActive(true);
             cam.cameraType = CameraType.Reflection;
@@ -216,15 +225,13 @@ namespace Enviro
             cam.backgroundColor = myProbe.backgroundColor;
             cam.allowHDR = myProbe.hdr;
             cam.targetTexture = cubemap;
-    #if !ENVIRO_HDRP
-            if (EnviroManager.instance != null)
-                {
-                    enviroRenderer = renderCamObj.AddComponent<EnviroRenderer>();
-                }
-    #endif
+#if !ENVIRO_HDRP
+            if (EnviroManager.instance != null) enviroRenderer = renderCamObj.AddComponent<EnviroRenderer>();
+#endif
             tempCam.hideFlags = HideFlags.HideAndDontSave;
             return cam;
         }
+
         private void CreateCubemap()
         {
             if (cubemap != null && myProbe.resolution == currentRes)
@@ -241,12 +248,12 @@ namespace Enviro
                 finalCubemap.Release();
                 DestroyImmediate(finalCubemap);
             }
-                
 
-            int resolution = myProbe.resolution;
 
-            currentRes = resolution; 
-            RenderTextureFormat format = RenderTextureFormat.ARGBHalf;
+            var resolution = myProbe.resolution;
+
+            currentRes = resolution;
+            var format = RenderTextureFormat.ARGBHalf;
 
             cubemap = new RenderTexture(resolution, resolution, 16, format, RenderTextureReadWrite.Linear);
             cubemap.dimension = TextureDimension.Cube;
@@ -264,6 +271,7 @@ namespace Enviro
             finalCubemap.filterMode = FilterMode.Trilinear;
             finalCubemap.Create();
         }
+
         //Create the textures
         private void CreateTexturesAndMaterial()
         {
@@ -273,9 +281,9 @@ namespace Enviro
             if (convolutionMat == null)
                 convolutionMat = new Material(Shader.Find("Hidden/EnviroCubemapBlur"));
 
-            int resolution = myProbe.resolution;
+            var resolution = myProbe.resolution;
 
-            RenderTextureFormat format = RenderTextureFormat.ARGBHalf;
+            var format = RenderTextureFormat.ARGBHalf;
 
             if (mirrorTexture == null || mirrorTexture.width != resolution || mirrorTexture.height != resolution)
             {
@@ -301,10 +309,11 @@ namespace Enviro
                 renderTexture.Create();
             }
         }
+
         // Refresh Methods
         public void RefreshReflection(bool timeSlice = false)
         {
-    #if ENVIRO_HDRP
+#if ENVIRO_HDRP
             if (customRendering)
             {
                 if (refreshing != null)
@@ -338,7 +347,7 @@ namespace Enviro
                 if(hdprobe != null)
                    hdprobe.RequestRenderNextUpdate();
             }
-    #else
+#else
             if (customRendering)
             {
                 if (refreshing != null)
@@ -365,15 +374,15 @@ namespace Enviro
                 {
                     refreshing = StartCoroutine(RefreshInstant(renderTexture, mirrorTexture));
                 }
-            } 
+            }
             else
             {
-                renderId = myProbe.RenderProbe(); 
+                renderId = myProbe.RenderProbe();
             }
-    #endif
+#endif
         }
 
-        IEnumerator RefreshFirstTime()
+        private IEnumerator RefreshFirstTime()
         {
             yield return null;
             RefreshReflection(false);
@@ -394,25 +403,25 @@ namespace Enviro
 
             yield return null;
 
-            for (int face = 0; face < 6; face++)
+            for (var face = 0; face < 6; face++)
             {
                 renderCam.transform.rotation = orientations[face];
                 renderCam.Render();
 
-                if(mirrorTex != null)
+                if (mirrorTex != null)
                 {
                     Graphics.Blit(renderTex, mirrorTex, mirror);
-                    Graphics.CopyTexture(mirrorTex, 0, 0, cubemap, face, 0);   
-                }   
+                    Graphics.CopyTexture(mirrorTex, 0, 0, cubemap, face, 0);
+                }
             }
 
             ConvolutionCubemap();
-    #if ENVIRO_HDRP
+#if ENVIRO_HDRP
         if (hdprobe != null)
             hdprobe.SetTexture(ProbeSettings.Mode.Custom, finalCubemap);
-    #else
+#else
             myProbe.customBakedTexture = finalCubemap;
-    #endif
+#endif
             refreshing = null;
         }
 
@@ -423,27 +432,27 @@ namespace Enviro
         {
             CreateCubemap();
 
-            for (int face = 0;  face < 6; face++)
+            for (var face = 0; face < 6; face++)
             {
                 yield return null;
-                renderCam.transform.rotation = orientations[face];      
+                renderCam.transform.rotation = orientations[face];
                 renderCam.Render();
 
-                if(mirrorTex != null)
-                {         
+                if (mirrorTex != null)
+                {
                     Graphics.Blit(renderTex, mirrorTex, mirror);
                     Graphics.CopyTexture(mirrorTex, 0, 0, cubemap, face, 0);
                 }
                 //ClearTextures();           
             }
 
-                ConvolutionCubemap();
-    #if ENVIRO_HDRP
+            ConvolutionCubemap();
+#if ENVIRO_HDRP
             if (hdprobe != null)
                 hdprobe.SetTexture(ProbeSettings.Mode.Custom, finalCubemap);
-    #else
-                myProbe.customBakedTexture = finalCubemap;
-    #endif
+#else
+            myProbe.customBakedTexture = finalCubemap;
+#endif
             refreshing = null;
         }
 
@@ -462,10 +471,10 @@ namespace Enviro
                 bakingCam = CreateBakingCamera();
 
             bakingCam.transform.rotation = orientations[face];
-            RenderTexture temp = RenderTexture.GetTemporary(res, res, 0, RenderTextureFormat.ARGBFloat);
+            var temp = RenderTexture.GetTemporary(res, res, 0, RenderTextureFormat.ARGBFloat);
             bakingCam.targetTexture = temp;
             bakingCam.Render();
-            RenderTexture tex = new RenderTexture(res, res, 0, RenderTextureFormat.ARGBFloat);
+            var tex = new RenderTexture(res, res, 0, RenderTextureFormat.ARGBFloat);
             Graphics.Blit(temp, tex, bakeMat);
             RenderTexture.ReleaseTemporary(temp);
             return tex;
@@ -473,65 +482,64 @@ namespace Enviro
 
         private void ClearTextures()
         {
-            RenderTexture rt = RenderTexture.active;
+            var rt = RenderTexture.active;
             RenderTexture.active = renderTexture;
             GL.Clear(true, true, Color.clear);
             RenderTexture.active = mirrorTexture;
             GL.Clear(true, true, Color.clear);
             RenderTexture.active = rt;
         }
-    
+
 
         //This is not a proper convolution and very hacky to get anywhere near of unity realtime reflection probe mip convolution.
         private void ConvolutionCubemap()
         {
-            int mipCount = 7;
+            var mipCount = 7;
 
             GL.PushMatrix();
             GL.LoadOrtho();
 
             cubemap.GenerateMips();
 
-            float texel = 1f;
-            switch(finalCubemap.width)
+            var texel = 1f;
+            switch (finalCubemap.width)
             {
-
                 case 16:
-                texel = 1f;
-                break;
+                    texel = 1f;
+                    break;
 
                 case 32:
-                texel = 1f;
-                break;
+                    texel = 1f;
+                    break;
 
                 case 64:
-                texel = 2f;
-                break;
+                    texel = 2f;
+                    break;
 
                 case 128:
-                texel = 4f;
-                break;
+                    texel = 4f;
+                    break;
 
                 case 256:
-                texel = 8f;
-                break;
+                    texel = 8f;
+                    break;
 
                 case 512:
-                texel = 14f;
-                break;
+                    texel = 14f;
+                    break;
 
                 case 1024:
-                texel = 30f;
-                break;
-    
+                    texel = 30f;
+                    break;
+
                 case 2048:
-                texel = 60f;
-                break;
+                    texel = 60f;
+                    break;
             }
 
             float res = finalCubemap.width;
 
-            for (int mip = 0; mip < mipCount + 1; mip++)
+            for (var mip = 0; mip < mipCount + 1; mip++)
             {
                 //Copy each face
                 Graphics.CopyTexture(cubemap, 0, mip, finalCubemap, 0, mip);
@@ -541,15 +549,15 @@ namespace Enviro
                 Graphics.CopyTexture(cubemap, 4, mip, finalCubemap, 4, mip);
                 Graphics.CopyTexture(cubemap, 5, mip, finalCubemap, 5, mip);
 
-                int dstMip = mip + 1;
+                var dstMip = mip + 1;
 
                 if (dstMip == mipCount)
                     break;
-            
-                float texelSize = (texel * dstMip) / res;
-             
+
+                var texelSize = texel * dstMip / res;
+
                 convolutionMat.SetTexture("_MainTex", finalCubemap);
-                convolutionMat.SetFloat("_Texel", texelSize);        
+                convolutionMat.SetFloat("_Texel", texelSize);
                 convolutionMat.SetFloat("_Level", mip);
                 convolutionMat.SetPass(0);
 
@@ -635,16 +643,19 @@ namespace Enviro
             }
 
             GL.PopMatrix();
-
         }
+
         private void UpdateStandaloneReflection()
         {
-            if ((EnviroManager.instance.Time.GetDateInHours() > lastRelfectionUpdate + reflectionsUpdateTreshhold ||EnviroManager.instance.Time.GetDateInHours() < lastRelfectionUpdate - reflectionsUpdateTreshhold) && updateReflectionOnGameTime)
+            if ((EnviroManager.instance.Time.GetDateInHours() > lastRelfectionUpdate + reflectionsUpdateTreshhold ||
+                 EnviroManager.instance.Time.GetDateInHours() < lastRelfectionUpdate - reflectionsUpdateTreshhold) &&
+                updateReflectionOnGameTime)
             {
                 lastRelfectionUpdate = EnviroManager.instance.Time.GetDateInHours();
                 RefreshReflection(!useTimeSlicing);
             }
         }
+
         private void Update()
         {
             if (currentMode != customRendering)
@@ -662,11 +673,7 @@ namespace Enviro
                 }
             }
 
-            if (EnviroManager.instance != null && standalone)
-            {
-                UpdateStandaloneReflection();
-            
-            }
+            if (EnviroManager.instance != null && standalone) UpdateStandaloneReflection();
         }
     }
 }

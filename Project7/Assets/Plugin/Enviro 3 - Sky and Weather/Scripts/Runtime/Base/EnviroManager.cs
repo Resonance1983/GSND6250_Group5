@@ -5,59 +5,58 @@ using UnityEngine;
 
 namespace Enviro
 {
-    
-
     [ExecuteInEditMode]
     public class EnviroManager : EnviroManagerBase
-    {     
+    {
         private static EnviroManager _instance; // Creat a static instance for easy access!
 
         public static EnviroManager instance
-        { 
+        {
             get
             {
                 if (_instance == null)
-                    _instance = GameObject.FindObjectOfType<EnviroManager>();
+                    _instance = FindObjectOfType<EnviroManager>();
 
                 return _instance;
             }
         }
-  
+
         //General
-        public GeneralObjects Objects = new GeneralObjects();
-        
+        public GeneralObjects Objects = new();
+
         //Setup
         public bool dontDestroyOnLoad;
         public Camera Camera;
         public string CameraTag = "MainCamera";
-        public List<EnviroCameras> Cameras = new List<EnviroCameras>();
-        [Tooltip("'Optional': Assign a transform here to change what object Enviro and weather effects should follow. If not set it will use the camera transform.")]
+        public List<EnviroCameras> Cameras = new();
+
+        [Tooltip(
+            "'Optional': Assign a transform here to change what object Enviro and weather effects should follow. If not set it will use the camera transform.")]
         public Transform optionalFollowTransform;
-  
+
         //Inspector
         public bool showSetup;
         public bool showModules;
         public bool showEvents;
         public bool showThirdParty;
- 
+
         // Publics 
-        [Range(0.2f,0.7f)]
-        public float dayNightSwitch = 0.45f;
+        [Range(0.2f, 0.7f)] public float dayNightSwitch = 0.45f;
         public bool isNight;
         public float solarTime;
         public float lunarTime;
         public bool notFirstFrame = false;
 
         //Effect Removal Zones
-        public List<EnviroEffectRemovalZone> removalZones = new List<EnviroEffectRemovalZone>();
-   
-        struct ZoneParams
+        public List<EnviroEffectRemovalZone> removalZones = new();
+
+        private struct ZoneParams
         {
             public float type;
             public Vector3 pos;
             public float radius;
             public Vector3 size;
-            public Vector3 axis;   
+            public Vector3 axis;
             public float stretch;
             public float density;
             public float feather;
@@ -70,79 +69,92 @@ namespace Enviro
         public ComputeBuffer removeZoneParamsCB;
         public ComputeBuffer clearCB;
 
-        ZoneParams[] removalZoneParams;
+        private ZoneParams[] removalZoneParams;
 
         //Non time module controls
-        [Range(0f,360f)]
-        public float sunRotationX;
-        [Range(0f,360f)]
-        public float sunRotationY;
-        [Range(0f,360f)]
-        public float moonRotationX;
-        [Range(0f,360f)]
-        public float moonRotationY;
+        [Range(0f, 360f)] public float sunRotationX;
+        [Range(0f, 360f)] public float sunRotationY;
+        [Range(0f, 360f)] public float moonRotationX;
+        [Range(0f, 360f)] public float moonRotationY;
+
         public bool showNonTimeControls;
+
         /////// 
         //Events
-        public Enviro.EnviroEvents Events;
+        public EnviroEvents Events;
+
         public delegate void HourPassed();
+
         public delegate void DayPassed();
+
         public delegate void YearPassed();
+
         public delegate void WeatherChanged(EnviroWeatherType weatherType);
-        public delegate void ZoneWeatherChanged(EnviroWeatherType weatherType, Enviro.EnviroZone zone);
+
+        public delegate void ZoneWeatherChanged(EnviroWeatherType weatherType, EnviroZone zone);
+
         public delegate void SeasonChanged(EnviroEnvironment.Seasons season);
+
         public delegate void isNightEvent();
+
         public delegate void isDayEvent();
- 
+
         public event HourPassed OnHourPassed;
         public event DayPassed OnDayPassed;
         public event YearPassed OnYearPassed;
         public event WeatherChanged OnWeatherChanged;
         public event ZoneWeatherChanged OnZoneWeatherChanged;
-        public event SeasonChanged OnSeasonChanged; 
+        public event SeasonChanged OnSeasonChanged;
         public event isNightEvent OnNightTime;
         public event isDayEvent OnDayTime;
 
         //Zones
         public EnviroZone currentZone;
         public EnviroZone defaultZone;
-        public List<EnviroZone> zones = new List<EnviroZone>();
+        public List<EnviroZone> zones = new();
 
         public virtual void NotifyHourPassed()
         {
             if (OnHourPassed != null)
                 OnHourPassed();
         }
+
         public virtual void NotifyDayPassed()
         {
             if (OnDayPassed != null)
                 OnDayPassed();
         }
+
         public virtual void NotifyYearPassed()
         {
             if (OnYearPassed != null)
-                OnYearPassed(); 
+                OnYearPassed();
         }
+
         public virtual void NotifyWeatherChanged(EnviroWeatherType type)
         {
             if (OnWeatherChanged != null)
                 OnWeatherChanged(type);
         }
+
         public virtual void NotifyZoneWeatherChanged(EnviroWeatherType type, EnviroZone zone)
         {
             if (OnZoneWeatherChanged != null)
                 OnZoneWeatherChanged(type, zone);
         }
+
         public virtual void NotifySeasonChanged(EnviroEnvironment.Seasons season)
         {
             if (OnSeasonChanged != null)
                 OnSeasonChanged(season);
         }
+
         public virtual void NotifyIsNight()
         {
             if (OnNightTime != null)
                 OnNightTime();
         }
+
         public virtual void NotifyIsDay()
         {
             if (OnDayTime != null)
@@ -154,181 +166,175 @@ namespace Enviro
         {
             Events.onHourPassedActions.Invoke();
         }
+
         private void DayPassedInvoke()
         {
             Events.onDayPassedActions.Invoke();
         }
+
         private void YearPassedInvoke()
         {
             Events.onYearPassedActions.Invoke();
         }
+
         private void WeatherChangedInvoke()
         {
             Events.onWeatherChangedActions.Invoke();
         }
+
         private void SeasonsChangedInvoke()
         {
             Events.onSeasonChangedActions.Invoke();
         }
+
         private void NightTimeInvoke()
         {
-            Events.onNightActions.Invoke ();
+            Events.onNightActions.Invoke();
         }
+
         private void DayTimeInvoke()
         {
-            Events.onDayActions.Invoke ();
+            Events.onDayActions.Invoke();
         }
+
         private void ZoneChangedInvoke()
         {
-            Events.onZoneChangedActions.Invoke ();
+            Events.onZoneChangedActions.Invoke();
         }
 
         //Lighting updates
         public bool updateSkyAndLighting = true;
         public bool updateSkyAndLightingHDRP = true;
- 
+
         // HDRP
-#if ENVIRO_HDRP 
+#if ENVIRO_HDRP
         public UnityEngine.Rendering.Volume volumeHDRP;
         public UnityEngine.Rendering.VolumeProfile volumeProfileHDRP;
 #endif
         //////
 
 
-
-        void OnEnable()
+        private void OnEnable()
         {
-    #if UNITY_EDITOR
-            if(UnityEditor.PrefabUtility.IsPartOfAnyPrefab(gameObject))
-               UnityEditor.PrefabUtility.UnpackPrefabInstance(gameObject,UnityEditor.PrefabUnpackMode.OutermostRoot,UnityEditor.InteractionMode.UserAction);
-    #endif
+#if UNITY_EDITOR
+            if (UnityEditor.PrefabUtility.IsPartOfAnyPrefab(gameObject))
+                UnityEditor.PrefabUtility.UnpackPrefabInstance(gameObject, UnityEditor.PrefabUnpackMode.OutermostRoot,
+                    UnityEditor.InteractionMode.UserAction);
+#endif
 
-            if(configuration == null)
-               Debug.Log("Please create or assign a configuration asset in your Enviro Manager!");
+            if (configuration == null)
+                Debug.Log("Please create or assign a configuration asset in your Enviro Manager!");
 
-            CreateGeneralObjects ();
-    #if ENVIRO_HDRP
+            CreateGeneralObjects();
+#if ENVIRO_HDRP
             CreateHDRPVolume ();
-    #endif
+#endif
             UpdateManager();
             EnableModules();
 
-    #if !ENVIRO_HDRP && !ENVIRO_URP
+#if !ENVIRO_HDRP && !ENVIRO_URP
             //Add Enviro Render Component to main camera in builtin rp
-           AddCameraComponents();
-    #endif
+            AddCameraComponents();
+#endif
 
             EventInit();
-            SetSRPKeywords (); 
-        }  
+            SetSRPKeywords();
+        }
 
-        void OnDisable()
-        {  
-            if(Fog != null)
-               Fog.Disable();
+        private void OnDisable()
+        {
+            if (Fog != null)
+                Fog.Disable();
 
             ReleaseZoneBuffers();
         }
- 
+
         private void AddCameraComponents()
         {
-            if(Camera != null)
-            {
-                if(Camera.gameObject.GetComponent<EnviroRenderer>() == null)
-                   Camera.gameObject.AddComponent<EnviroRenderer>();
-            }
+            if (Camera != null)
+                if (Camera.gameObject.GetComponent<EnviroRenderer>() == null)
+                    Camera.gameObject.AddComponent<EnviroRenderer>();
 
-            for(int i = 0; i < Cameras.Count; i++)
-            {
-                if(Cameras[i].camera != null)
-                {
-                    if(Cameras[i].camera.gameObject.GetComponent<EnviroRenderer>() == null)
+            for (var i = 0; i < Cameras.Count; i++)
+                if (Cameras[i].camera != null)
+                    if (Cameras[i].camera.gameObject.GetComponent<EnviroRenderer>() == null)
                         Cameras[i].camera.gameObject.AddComponent<EnviroRenderer>();
-                }
-            }
         }
 
         // Change the camera to a new one.
-        public void ChangeCamera (Camera cam)
+        public void ChangeCamera(Camera cam)
         {
             Camera = cam;
 
-    #if !ENVIRO_HDRP && !ENVIRO_URP
+#if !ENVIRO_HDRP && !ENVIRO_URP
             AddCameraComponents();
-    #endif
+#endif
         }
- 
-        public void AddAdditionalCamera (Camera cam, bool reset = false)
+
+        public void AddAdditionalCamera(Camera cam, bool reset = false)
         {
-            bool added = false;
+            var added = false;
 
-            for(int i = 0; i < Cameras.Count; i++)
-            {
-                if(Cameras[i].camera != null && Cameras[i].camera == cam)
-                added = true;
-            }
+            for (var i = 0; i < Cameras.Count; i++)
+                if (Cameras[i].camera != null && Cameras[i].camera == cam)
+                    added = true;
 
-            if(!added)
+            if (!added)
             {
-                EnviroCameras newCam = new EnviroCameras();
+                var newCam = new EnviroCameras();
                 newCam.camera = cam;
                 newCam.resetMatrix = reset;
 
                 Cameras.Add(newCam);
-            #if !ENVIRO_HDRP && !ENVIRO_URP
+#if !ENVIRO_HDRP && !ENVIRO_URP
                 AddCameraComponents();
-            #endif
+#endif
             }
         }
 
-        void Start ()
-        {   
-
+        private void Start()
+        {
             // Set dont destroy on load on start
-            if(dontDestroyOnLoad && Application.isPlaying)
+            if (dontDestroyOnLoad && Application.isPlaying)
                 DontDestroyOnLoad(gameObject);
 
             //Set a first frame bool that will be used for events.
             notFirstFrame = false;
             StartCoroutine(FirstFrame());
 
-            StartModules ();
+            StartModules();
         }
- 
+
         //Update modules
-        void Update()
-        {     
-            if(!Application.isPlaying)
+        private void Update()
+        {
+            if (!Application.isPlaying)
                 LoadConfiguration();
 
-            UpdateManager ();
+            UpdateManager();
 
             //Update all modules
-            UpdateModules ();
+            UpdateModules();
 
             //Update non time case
-            if(Time == null)
-               UpdateNonTime();
+            if (Time == null)
+                UpdateNonTime();
         }
 
-        void LateUpdate() 
-        { 
-            if(Camera != null)
-            {
-                if(optionalFollowTransform != null)
-                {
-                    transform.position = optionalFollowTransform.position;
-                }
-                else
-                {
-                    transform.position = Camera.transform.position;
-                }
-            }    
-        }
-
-        void CreateGeneralObjects ()
+        private void LateUpdate()
         {
-            if(Objects.sun == null)
+            if (Camera != null)
+            {
+                if (optionalFollowTransform != null)
+                    transform.position = optionalFollowTransform.position;
+                else
+                    transform.position = Camera.transform.position;
+            }
+        }
+
+        private void CreateGeneralObjects()
+        {
+            if (Objects.sun == null)
             {
                 Objects.sun = new GameObject();
                 Objects.sun.name = "Sun";
@@ -336,16 +342,16 @@ namespace Enviro
                 Objects.sun.transform.localPosition = Vector3.zero;
             }
 
-            if(Objects.moon == null)
+            if (Objects.moon == null)
             {
                 Objects.moon = new GameObject();
                 Objects.moon.name = "Moon";
                 Objects.moon.transform.SetParent(transform);
                 Objects.moon.transform.localPosition = Vector3.zero;
             }
-  
-            if(Objects.stars == null)
-            { 
+
+            if (Objects.stars == null)
+            {
                 Objects.stars = new GameObject();
                 Objects.stars.name = "Stars";
                 Objects.stars.transform.SetParent(transform);
@@ -356,59 +362,57 @@ namespace Enviro
         // Set the solar and lunar time based on sun rotation.
         private void UpdateNonTime()
         {
-            if(Objects.sun != null)
+            if (Objects.sun != null)
             {
-                Objects.sun.transform.eulerAngles = new Vector3(sunRotationX,sunRotationY,0f);
+                Objects.sun.transform.eulerAngles = new Vector3(sunRotationX, sunRotationY, 0f);
 
-                if(sunRotationX > 0f && sunRotationX <= 90f)
-                   solarTime = EnviroHelper.Remap(sunRotationX, 0f, 90f, 0.5f, 1f);
+                if (sunRotationX > 0f && sunRotationX <= 90f)
+                    solarTime = EnviroHelper.Remap(sunRotationX, 0f, 90f, 0.5f, 1f);
                 else if (sunRotationX > 90f && sunRotationX <= 180f)
-                   solarTime = EnviroHelper.Remap(sunRotationX, 90f, 180f, 1f, 0.5f);
+                    solarTime = EnviroHelper.Remap(sunRotationX, 90f, 180f, 1f, 0.5f);
                 else if (sunRotationX > 180f && sunRotationX <= 270f)
-                   solarTime = EnviroHelper.Remap(sunRotationX, 180f, 270f, 0.5f, 0.0f);
+                    solarTime = EnviroHelper.Remap(sunRotationX, 180f, 270f, 0.5f, 0.0f);
                 else if (sunRotationX > 270f && sunRotationX <= 360f)
-                   solarTime = EnviroHelper.Remap(sunRotationX, 270f, 360f, 0.0f, 0.5f);
+                    solarTime = EnviroHelper.Remap(sunRotationX, 270f, 360f, 0.0f, 0.5f);
                 else solarTime = 0.5f;
             }
-            if(Objects.moon != null)
+
+            if (Objects.moon != null)
             {
-                Objects.moon.transform.eulerAngles = new Vector3(moonRotationX,moonRotationY,0f);
-                 
-                if(moonRotationX > 0f && moonRotationX <= 90f)
-                   lunarTime = EnviroHelper.Remap(moonRotationX, 0f, 90f, 0.5f, 1f);
+                Objects.moon.transform.eulerAngles = new Vector3(moonRotationX, moonRotationY, 0f);
+
+                if (moonRotationX > 0f && moonRotationX <= 90f)
+                    lunarTime = EnviroHelper.Remap(moonRotationX, 0f, 90f, 0.5f, 1f);
                 else if (moonRotationX > 90f && moonRotationX <= 180f)
-                   lunarTime = EnviroHelper.Remap(moonRotationX, 90f, 180f, 1f, 0.5f);
+                    lunarTime = EnviroHelper.Remap(moonRotationX, 90f, 180f, 1f, 0.5f);
                 else if (moonRotationX > 180f && moonRotationX <= 270f)
-                   lunarTime = EnviroHelper.Remap(moonRotationX, 180f, 270f, 0.5f, 0.0f);
+                    lunarTime = EnviroHelper.Remap(moonRotationX, 180f, 270f, 0.5f, 0.0f);
                 else if (moonRotationX > 270f && moonRotationX <= 360f)
-                   lunarTime = EnviroHelper.Remap(moonRotationX, 270f, 360f, 0.0f, 0.5f);
-                else lunarTime = 0.5f; 
+                    lunarTime = EnviroHelper.Remap(moonRotationX, 270f, 360f, 0.0f, 0.5f);
+                else lunarTime = 0.5f;
             }
         }
 
         //Effect Removal Zones
-        public bool AddRemovalZone (EnviroEffectRemovalZone zone)
+        public bool AddRemovalZone(EnviroEffectRemovalZone zone)
         {
             removalZones.Add(zone);
             return true;
         }
-        public void RemoveRemovaleZone (EnviroEffectRemovalZone zone)
+
+        public void RemoveRemovaleZone(EnviroEffectRemovalZone zone)
         {
-
-         if(removalZones.Contains(zone))
-            removalZones.Remove(zone);
-
+            if (removalZones.Contains(zone))
+                removalZones.Remove(zone);
         }
- 
-        private void SetupZoneBuffers() 
-        { 
-            int count = 0;
 
-            for (int z = 0; z < removalZones.Count; z++)
-            {
+        private void SetupZoneBuffers()
+        {
+            var count = 0;
+
+            for (var z = 0; z < removalZones.Count; z++)
                 if (removalZones[z] != null && removalZones[z].enabled && removalZones[z].gameObject.activeSelf)
-                count++;
-            }
+                    count++;
 
             Shader.SetGlobalFloat("_EnviroRemovalZonesCount", count);
 
@@ -417,26 +421,26 @@ namespace Enviro
                 // Can't not set the buffer
                 Shader.SetGlobalBuffer("_EnviroRemovalZones", clearZoneCB);
                 return;
-            } 
+            }
 
             if (removalZoneParams == null || removalZoneParams.Length != count)
                 removalZoneParams = new ZoneParams[count];
 
-            int zoneID = 0;
-            for (int i = 0; i < removalZones.Count; i++)
+            var zoneID = 0;
+            for (var i = 0; i < removalZones.Count; i++)
             {
-                Enviro.EnviroEffectRemovalZone fz = removalZones[i];
+                var fz = removalZones[i];
                 if (fz == null || !fz.enabled || !fz.gameObject.activeSelf)
                     continue;
 
-                Transform t = fz.transform;
+                var t = fz.transform;
 
                 removalZoneParams[zoneID].type = (int)fz.type;
                 removalZoneParams[zoneID].pos = t.position;
                 removalZoneParams[zoneID].radius = fz.radius * fz.radius;
                 removalZoneParams[zoneID].size = fz.size;
                 removalZoneParams[zoneID].axis = -t.up;
-                removalZoneParams[zoneID].stretch = 1.0f/fz.stretch - 1.0f;
+                removalZoneParams[zoneID].stretch = 1.0f / fz.stretch - 1.0f;
                 removalZoneParams[zoneID].density = fz.density;
                 removalZoneParams[zoneID].feather = 1.0f - fz.feather;
                 removalZoneParams[zoneID].transform = t.transform.worldToLocalMatrix;
@@ -444,7 +448,8 @@ namespace Enviro
                 removalZoneParams[zoneID].pad1 = 0f;
 
                 zoneID++;
-            }  
+            }
+
             removeZoneParamsCB.SetData(removalZoneParams);
             Shader.SetGlobalBuffer("_EnviroRemovalZones", removeZoneParamsCB);
         }
@@ -457,20 +462,20 @@ namespace Enviro
 
         private void ReleaseZoneBuffers()
         {
-            if(removeZoneParamsCB != null)
-            EnviroHelper.ReleaseComputeBuffer(ref removeZoneParamsCB);
-            if(clearZoneCB != null)
-            EnviroHelper.ReleaseComputeBuffer(ref clearZoneCB);
+            if (removeZoneParamsCB != null)
+                EnviroHelper.ReleaseComputeBuffer(ref removeZoneParamsCB);
+            if (clearZoneCB != null)
+                EnviroHelper.ReleaseComputeBuffer(ref clearZoneCB);
         }
- 
-        IEnumerator FirstFrame ()
+
+        private IEnumerator FirstFrame()
         {
             yield return 0;
             notFirstFrame = true;
         }
 
         ///HDRP Section
-        public void CreateHDRPVolume ()
+        public void CreateHDRPVolume()
         {
 #if ENVIRO_HDRP
             if(volumeProfileHDRP == null)
@@ -494,43 +499,39 @@ namespace Enviro
             }
 #endif
         }
- 
-        private void CheckCameraSetup ()
+
+        private void CheckCameraSetup()
         {
             //Auto assign camera with the camera tag when camera not set.
-            if(Camera == null)
-            {
-                for (int i = 0; i < Camera.allCameras.Length; i++)
-                {
+            if (Camera == null)
+                for (var i = 0; i < Camera.allCameras.Length; i++)
                     if (Camera.allCameras[i].tag == CameraTag)
                     {
                         Camera = Camera.allCameras[i];
-                #if !ENVIRO_HDRP || !ENVIRO_URP
+#if !ENVIRO_HDRP || !ENVIRO_URP
                         AddCameraComponents();
-                #endif
+#endif
                     }
-                }
-            }
         }
 
-        private void SetSRPKeywords ()
+        private void SetSRPKeywords()
         {
-            #if ENVIRO_HDRP
+#if ENVIRO_HDRP
             Shader.EnableKeyword("ENVIROHDRP");
             Shader.DisableKeyword("ENVIROURP");
-            #elif ENVIRO_URP
+#elif ENVIRO_URP
             Shader.EnableKeyword("ENVIROURP");
             Shader.DisableKeyword("ENVIROHDRP");
-            #else
+#else
             Shader.DisableKeyword("ENVIROURP");
             Shader.DisableKeyword("ENVIROHDRP");
-            #endif
+#endif
         }
 
         //Saves time and weather conditions
         public void Save()
         {
-            if(Time != null)
+            if (Time != null)
             {
                 PlayerPrefs.SetFloat("Time_Hours", Time.GetTimeOfDay());
                 PlayerPrefs.SetInt("Time_Days", Time.days);
@@ -538,20 +539,16 @@ namespace Enviro
                 PlayerPrefs.SetInt("Time_Years", Time.years);
             }
 
-            if(Weather != null)
-            {
-                for (int i = 0; i < Weather.Settings.weatherTypes.Count; i++)
-                {
+            if (Weather != null)
+                for (var i = 0; i < Weather.Settings.weatherTypes.Count; i++)
                     if (Weather.Settings.weatherTypes[i] == Weather.targetWeatherType)
                         PlayerPrefs.SetInt("currentWeather", i);
-                }
-            }
         }
 
         //Loads time and weather conditions
         public void Load()
         {
-            if(Time != null)
+            if (Time != null)
             {
                 if (PlayerPrefs.HasKey("Time_Hours"))
                     Time.SetTimeOfDay(PlayerPrefs.GetFloat("Time_Hours"));
@@ -562,66 +559,61 @@ namespace Enviro
                 if (PlayerPrefs.HasKey("Time_Years"))
                     Time.years = PlayerPrefs.GetInt("Time_Years");
             }
-            if(Weather != null)
-            {
+
+            if (Weather != null)
                 if (PlayerPrefs.HasKey("currentWeather"))
                     Weather.ChangeWeatherInstant(PlayerPrefs.GetInt("currentWeather"));
-            }
-            
         }
 
         //Events
         private void EventInit()
         {
-            if(Time != null)
+            if (Time != null)
             {
-                OnHourPassed += () => HourPassedInvoke ();
-                OnDayPassed += () => DayPassedInvoke ();
-                OnYearPassed += () => YearPassedInvoke ();
+                OnHourPassed += () => HourPassedInvoke();
+                OnDayPassed += () => DayPassedInvoke();
+                OnYearPassed += () => YearPassedInvoke();
 
-                OnNightTime += () => NightTimeInvoke ();
-                OnDayTime += () => DayTimeInvoke ();
-            }
- 
-            if(Weather != null)
-            { 
-               OnWeatherChanged += (EnviroWeatherType type) =>  WeatherChangedInvoke ();
-               OnZoneWeatherChanged += (EnviroWeatherType type, EnviroZone zone) =>  ZoneChangedInvoke ();
+                OnNightTime += () => NightTimeInvoke();
+                OnDayTime += () => DayTimeInvoke();
             }
 
-            if(Environment != null)
+            if (Weather != null)
             {
-               OnSeasonChanged += (EnviroEnvironment.Seasons season) => SeasonsChangedInvoke ();
-            } 
+                OnWeatherChanged += (EnviroWeatherType type) => WeatherChangedInvoke();
+                OnZoneWeatherChanged += (EnviroWeatherType type, EnviroZone zone) => ZoneChangedInvoke();
+            }
+
+            if (Environment != null) OnSeasonChanged += (EnviroEnvironment.Seasons season) => SeasonsChangedInvoke();
         }
 
         //Updates manager variables.
-        private void UpdateManager ()
+        private void UpdateManager()
         {
-            if(Application.isPlaying)
-               CheckCameraSetup ();
+            if (Application.isPlaying)
+                CheckCameraSetup();
 
-            if(solarTime > dayNightSwitch)
+            if (solarTime > dayNightSwitch)
             {
-                if(isNight == true)
+                if (isNight == true)
                     NotifyIsDay();
 
                 isNight = false;
             }
             else
             {
-                if(isNight == false)
+                if (isNight == false)
                     NotifyIsNight();
 
                 isNight = true;
             }
 
             //Effect Removal Zones:
-            if(Fog != null || Effects != null)
-            { 
+            if (Fog != null || Effects != null)
+            {
                 CreateZoneBuffers();
                 SetupZoneBuffers();
-            } 
+            }
         }
     }
 }

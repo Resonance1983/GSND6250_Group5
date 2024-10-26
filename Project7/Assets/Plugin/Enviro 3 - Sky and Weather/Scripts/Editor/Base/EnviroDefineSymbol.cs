@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using UnityEditor;
- 
+
 [InitializeOnLoad]
-sealed class EnviroDefineSymbol
+internal sealed class EnviroDefineSymbol
 {
-    const string k_Define = "ENVIRO_3";
+    private const string k_Define = "ENVIRO_3";
 
     static EnviroDefineSymbol()
     {
@@ -32,12 +32,12 @@ sealed class EnviroDefineSymbol
         }
     }
 
-    static bool IsObsolete(BuildTargetGroup group)
+    private static bool IsObsolete(BuildTargetGroup group)
     {
         var attrs = typeof(BuildTargetGroup)
             .GetField(group.ToString())
             .GetCustomAttributes(typeof(ObsoleteAttribute), false);
 
         return attrs != null && attrs.Length > 0;
-    } 
+    }
 }

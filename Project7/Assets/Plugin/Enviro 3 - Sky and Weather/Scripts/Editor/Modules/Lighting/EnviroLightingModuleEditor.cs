@@ -7,48 +7,61 @@ namespace Enviro
 {
     [CustomEditor(typeof(EnviroLightingModule))]
     public class EnviroLightingModuleEditor : EnviroModuleEditor
-    {  
-        private EnviroLightingModule myTarget; 
+    {
+        private EnviroLightingModule myTarget;
 
         //Properties 
         //Direct Lighting
-        private SerializedProperty updateIntervallFrames,directLightIntensityModifier,sunIntensityCurve, moonIntensityCurve, sunColorGradient, moonColorGradient, lightingMode;  
+        private SerializedProperty updateIntervallFrames,
+            directLightIntensityModifier,
+            sunIntensityCurve,
+            moonIntensityCurve,
+            sunColorGradient,
+            moonColorGradient,
+            lightingMode;
+
         //Ambient Lighting
-        private SerializedProperty shadowIntensity, ambientIntensityModifier,ambientMode, ambientSkyboxUpdateIntervall, ambientSkyColorGradient, ambientEquatorColorGradient, ambientGroundColorGradient, ambientIntensityCurve;
-       
+        private SerializedProperty shadowIntensity,
+            ambientIntensityModifier,
+            ambientMode,
+            ambientSkyboxUpdateIntervall,
+            ambientSkyColorGradient,
+            ambientEquatorColorGradient,
+            ambientGroundColorGradient,
+            ambientIntensityCurve;
+
 #if ENVIRO_HDRP
         private SerializedProperty sunIntensityCurveHDRP, moonIntensityCurveHDRP, lightColorTemperatureHDRP, lightColorTintHDRP,ambientColorTintHDRP, controlExposure, sceneExposure, controlIndirectLighting, diffuseIndirectIntensity, reflectionIndirectIntensity;
 #endif
         //On Enable
         public override void OnEnable()
         {
-            
-            if(!target)
-                return; 
- 
+            if (!target)
+                return;
+
             base.OnEnable();
 
             myTarget = (EnviroLightingModule)target;
             serializedObj = new SerializedObject(myTarget);
             preset = serializedObj.FindProperty("preset");
             //Direct Lighting
-            updateIntervallFrames = serializedObj.FindProperty("Settings.updateIntervallFrames");      
-            lightingMode = serializedObj.FindProperty("Settings.lightingMode");      
-            sunIntensityCurve = serializedObj.FindProperty("Settings.sunIntensityCurve");      
-            moonIntensityCurve = serializedObj.FindProperty("Settings.moonIntensityCurve");         
-            sunColorGradient = serializedObj.FindProperty("Settings.sunColorGradient");       
-            moonColorGradient = serializedObj.FindProperty("Settings.moonColorGradient");      
+            updateIntervallFrames = serializedObj.FindProperty("Settings.updateIntervallFrames");
+            lightingMode = serializedObj.FindProperty("Settings.lightingMode");
+            sunIntensityCurve = serializedObj.FindProperty("Settings.sunIntensityCurve");
+            moonIntensityCurve = serializedObj.FindProperty("Settings.moonIntensityCurve");
+            sunColorGradient = serializedObj.FindProperty("Settings.sunColorGradient");
+            moonColorGradient = serializedObj.FindProperty("Settings.moonColorGradient");
             directLightIntensityModifier = serializedObj.FindProperty("Settings.directLightIntensityModifier");
             shadowIntensity = serializedObj.FindProperty("Settings.shadowIntensity");
             //Ambient Lighting
             ambientMode = serializedObj.FindProperty("Settings.ambientMode");
-            ambientSkyColorGradient = serializedObj.FindProperty("Settings.ambientSkyColorGradient");          
-            ambientEquatorColorGradient = serializedObj.FindProperty("Settings.ambientEquatorColorGradient");          
-            ambientGroundColorGradient = serializedObj.FindProperty("Settings.ambientGroundColorGradient");          
+            ambientSkyColorGradient = serializedObj.FindProperty("Settings.ambientSkyColorGradient");
+            ambientEquatorColorGradient = serializedObj.FindProperty("Settings.ambientEquatorColorGradient");
+            ambientGroundColorGradient = serializedObj.FindProperty("Settings.ambientGroundColorGradient");
             ambientIntensityCurve = serializedObj.FindProperty("Settings.ambientIntensityCurve");
             ambientIntensityModifier = serializedObj.FindProperty("Settings.ambientIntensityModifier");
             ambientSkyboxUpdateIntervall = serializedObj.FindProperty("Settings.ambientSkyboxUpdateIntervall");
-            #if ENVIRO_HDRP
+#if ENVIRO_HDRP
             sunIntensityCurveHDRP = serializedObj.FindProperty("Settings.sunIntensityCurveHDRP");
             moonIntensityCurveHDRP = serializedObj.FindProperty("Settings.moonIntensityCurveHDRP");
             lightColorTemperatureHDRP = serializedObj.FindProperty("Settings.lightColorTemperatureHDRP");
@@ -59,145 +72,146 @@ namespace Enviro
             controlIndirectLighting = serializedObj.FindProperty("Settings.controlIndirectLighting");
             diffuseIndirectIntensity = serializedObj.FindProperty("Settings.diffuseIndirectIntensity");
             reflectionIndirectIntensity = serializedObj.FindProperty("Settings.reflectionIndirectIntensity");
-            #endif
-        } 
+#endif
+        }
+
 /*
 
 */
         public override void OnInspectorGUI()
         {
-            if(!target)
+            if (!target)
                 return;
 
             base.OnInspectorGUI();
 
-            GUI.backgroundColor = new Color(0.0f,0.0f,0.5f,1f);
-            GUILayout.BeginVertical("",boxStyleModified);
+            GUI.backgroundColor = new Color(0.0f, 0.0f, 0.5f, 1f);
+            GUILayout.BeginVertical("", boxStyleModified);
             GUI.backgroundColor = Color.white;
             EditorGUILayout.BeginHorizontal();
             myTarget.showModuleInspector = GUILayout.Toggle(myTarget.showModuleInspector, "Lighting", headerFoldout);
-            
+
             GUILayout.FlexibleSpace();
-            if(GUILayout.Button("x", EditorStyles.miniButtonRight,GUILayout.Width(18), GUILayout.Height(18)))
+            if (GUILayout.Button("x", EditorStyles.miniButtonRight, GUILayout.Width(18), GUILayout.Height(18)))
             {
-                EnviroManager.instance.RemoveModule(EnviroManager.ModuleType.Lighting);
+                EnviroManager.instance.RemoveModule(EnviroManagerBase.ModuleType.Lighting);
                 DestroyImmediate(this);
                 return;
-            } 
-            
+            }
+
             EditorGUILayout.EndHorizontal();
-            
-            if(myTarget.showModuleInspector)
+
+            if (myTarget.showModuleInspector)
             {
                 RenderDisableInputBox();
-                serializedObj.UpdateIfRequiredOrScript ();
+                serializedObj.UpdateIfRequiredOrScript();
                 EditorGUI.BeginChangeCheck();
 
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
-                myTarget.showDirectLightingControls = GUILayout.Toggle(myTarget.showDirectLightingControls, "Direct Lighting Controls", headerFoldout);              
-                if(myTarget.showDirectLightingControls)
+                myTarget.showDirectLightingControls = GUILayout.Toggle(myTarget.showDirectLightingControls,
+                    "Direct Lighting Controls", headerFoldout);
+                if (myTarget.showDirectLightingControls)
                 {
                     GUILayout.Space(10);
-                    myTarget.Settings.setDirectLighting = EditorGUILayout.BeginToggleGroup("Set Direct Lighting",myTarget.Settings.setDirectLighting);
+                    myTarget.Settings.setDirectLighting =
+                        EditorGUILayout.BeginToggleGroup("Set Direct Lighting", myTarget.Settings.setDirectLighting);
                     EditorGUILayout.PropertyField(lightingMode);
-                    if (GUILayout.Button("Apply Lighting Mode Changes"))
-                    {
-                        myTarget.ApplyLightingChanges();
-                    }
+                    if (GUILayout.Button("Apply Lighting Mode Changes")) myTarget.ApplyLightingChanges();
                     GUILayout.Space(10);
-                    
-                    EditorGUILayout.LabelField("Lighting Updates",headerStyle);
+
+                    EditorGUILayout.LabelField("Lighting Updates", headerStyle);
                     EditorGUILayout.PropertyField(updateIntervallFrames);
-                     GUILayout.Space(5);
-                    EditorGUILayout.LabelField("Light Intensity",headerStyle);
-                    #if !ENVIRO_HDRP
+                    GUILayout.Space(5);
+                    EditorGUILayout.LabelField("Light Intensity", headerStyle);
+#if !ENVIRO_HDRP
                     EditorGUILayout.PropertyField(sunIntensityCurve);
                     EditorGUILayout.PropertyField(moonIntensityCurve);
-                    #else
+#else
                     EditorGUILayout.PropertyField(sunIntensityCurveHDRP);
                     EditorGUILayout.PropertyField(moonIntensityCurveHDRP);
-                    #endif
+#endif
                     DisableInputStart();
                     EditorGUILayout.PropertyField(directLightIntensityModifier);
-                    EditorGUILayout.PropertyField(shadowIntensity);    
+                    EditorGUILayout.PropertyField(shadowIntensity);
                     DisableInputEnd();
                     GUILayout.Space(10);
-                    EditorGUILayout.LabelField("Light Color",headerStyle);
-                    #if !ENVIRO_HDRP
+                    EditorGUILayout.LabelField("Light Color", headerStyle);
+#if !ENVIRO_HDRP
                     EditorGUILayout.PropertyField(sunColorGradient);
                     EditorGUILayout.PropertyField(moonColorGradient);
-                    #else
+#else
                     EditorGUILayout.PropertyField(lightColorTintHDRP);
                     EditorGUILayout.PropertyField(lightColorTemperatureHDRP);
-                    #endif 
-                    #if ENVIRO_HDRP
+#endif
+#if ENVIRO_HDRP
                     GUILayout.Space(10);
                     EditorGUILayout.LabelField("Exposure",headerStyle);
                     EditorGUILayout.PropertyField(controlExposure);
                     EditorGUILayout.PropertyField(sceneExposure);
-                    #endif
+#endif
                     EditorGUILayout.EndToggleGroup();
                 }
+
                 GUILayout.EndVertical();
 
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
-                myTarget.showAmbientLightingControls = GUILayout.Toggle(myTarget.showAmbientLightingControls, "Ambient Lighting Controls", headerFoldout);              
-                if(myTarget.showAmbientLightingControls)
+                myTarget.showAmbientLightingControls = GUILayout.Toggle(myTarget.showAmbientLightingControls,
+                    "Ambient Lighting Controls", headerFoldout);
+                if (myTarget.showAmbientLightingControls)
                 {
                     GUILayout.Space(10);
 
-                    myTarget.Settings.setAmbientLighting = EditorGUILayout.BeginToggleGroup("Set Ambient Lighting",myTarget.Settings.setAmbientLighting);           
-               #if !ENVIRO_HDRP 
+                    myTarget.Settings.setAmbientLighting = EditorGUILayout.BeginToggleGroup("Set Ambient Lighting",
+                        myTarget.Settings.setAmbientLighting);
+#if !ENVIRO_HDRP
                     EditorGUILayout.PropertyField(ambientMode);
-                    GUILayout.Space(10); 
-                        if(myTarget.Settings.ambientMode == UnityEngine.Rendering.AmbientMode.Flat)
-                        {
-                            EditorGUILayout.LabelField("Ambient Color",headerStyle);
-                            EditorGUILayout.PropertyField(ambientSkyColorGradient);
-                            GUILayout.Space(5); 
-                            EditorGUILayout.LabelField("Ambient Updates",headerStyle);
-                            EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall);  
-                            GUILayout.Space(5); 
-                            EditorGUILayout.LabelField("Ambient Intensity",headerStyle);
-                            EditorGUILayout.PropertyField(ambientIntensityCurve);
-                            DisableInputStart();
-                            EditorGUILayout.PropertyField(ambientIntensityModifier);
-                            DisableInputEnd();
-              
-                        }
-                        else if(myTarget.Settings.ambientMode == UnityEngine.Rendering.AmbientMode.Trilight)
-                        {
-                            EditorGUILayout.LabelField("Ambient Color",headerStyle);
-                            EditorGUILayout.PropertyField(ambientSkyColorGradient);
-                            EditorGUILayout.PropertyField(ambientEquatorColorGradient);
-                            EditorGUILayout.PropertyField(ambientGroundColorGradient);
-                            GUILayout.Space(5); 
-                            EditorGUILayout.LabelField("Ambient Updates",headerStyle);
-                            EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall);  
-                            GUILayout.Space(5); 
-                            EditorGUILayout.LabelField("Ambient Intensity",headerStyle);
-                            EditorGUILayout.PropertyField(ambientIntensityCurve);
-                            DisableInputStart();
-                            EditorGUILayout.PropertyField(ambientIntensityModifier);
-                            DisableInputEnd();
-                
-                        }
-                        else 
-                        {
-                             EditorGUILayout.LabelField("Ambient Updates",headerStyle);
-                             EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall); 
-                             GUILayout.Space(5); 
-                             EditorGUILayout.LabelField("Ambient Intensity",headerStyle);
-                             EditorGUILayout.PropertyField(ambientIntensityCurve);
-                             DisableInputStart();
-                             EditorGUILayout.PropertyField(ambientIntensityModifier);
-                             DisableInputEnd();
-                        }             
-                #else
+                    GUILayout.Space(10);
+                    if (myTarget.Settings.ambientMode == UnityEngine.Rendering.AmbientMode.Flat)
+                    {
+                        EditorGUILayout.LabelField("Ambient Color", headerStyle);
+                        EditorGUILayout.PropertyField(ambientSkyColorGradient);
+                        GUILayout.Space(5);
+                        EditorGUILayout.LabelField("Ambient Updates", headerStyle);
+                        EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall);
+                        GUILayout.Space(5);
+                        EditorGUILayout.LabelField("Ambient Intensity", headerStyle);
+                        EditorGUILayout.PropertyField(ambientIntensityCurve);
+                        DisableInputStart();
+                        EditorGUILayout.PropertyField(ambientIntensityModifier);
+                        DisableInputEnd();
+                    }
+                    else if (myTarget.Settings.ambientMode == UnityEngine.Rendering.AmbientMode.Trilight)
+                    {
+                        EditorGUILayout.LabelField("Ambient Color", headerStyle);
+                        EditorGUILayout.PropertyField(ambientSkyColorGradient);
+                        EditorGUILayout.PropertyField(ambientEquatorColorGradient);
+                        EditorGUILayout.PropertyField(ambientGroundColorGradient);
+                        GUILayout.Space(5);
+                        EditorGUILayout.LabelField("Ambient Updates", headerStyle);
+                        EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall);
+                        GUILayout.Space(5);
+                        EditorGUILayout.LabelField("Ambient Intensity", headerStyle);
+                        EditorGUILayout.PropertyField(ambientIntensityCurve);
+                        DisableInputStart();
+                        EditorGUILayout.PropertyField(ambientIntensityModifier);
+                        DisableInputEnd();
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField("Ambient Updates", headerStyle);
+                        EditorGUILayout.PropertyField(ambientSkyboxUpdateIntervall);
+                        GUILayout.Space(5);
+                        EditorGUILayout.LabelField("Ambient Intensity", headerStyle);
+                        EditorGUILayout.PropertyField(ambientIntensityCurve);
+                        DisableInputStart();
+                        EditorGUILayout.PropertyField(ambientIntensityModifier);
+                        DisableInputEnd();
+                    }
+#else
                 GUILayout.Space(5);
                 EditorGUILayout.PropertyField(controlIndirectLighting);
                 if(myTarget.Settings.controlIndirectLighting)
@@ -210,49 +224,44 @@ namespace Enviro
                 {
                     EditorGUILayout.LabelField("Indirect Color",headerStyle);
                     EditorGUILayout.PropertyField(ambientColorTintHDRP);    
-                }       
-                #endif   
-                 
+                }
+#endif
+
                     EditorGUILayout.EndToggleGroup();
                 }
+
                 GUILayout.EndVertical();
 
                 /// Save Load
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 myTarget.showSaveLoad = GUILayout.Toggle(myTarget.showSaveLoad, "Save/Load", headerFoldout);
-                
-                if(myTarget.showSaveLoad)
+
+                if (myTarget.showSaveLoad)
                 {
                     EditorGUILayout.PropertyField(preset);
-                    GUILayout.BeginHorizontal("",wrapStyle);
-                    if(myTarget.preset != null)
+                    GUILayout.BeginHorizontal("", wrapStyle);
+                    if (myTarget.preset != null)
                     {
-                        if(GUILayout.Button("Load"))
-                        {
-                            myTarget.LoadModuleValues();
-                        }
-                        if(GUILayout.Button("Save"))
-                        {
-                            myTarget.SaveModuleValues(myTarget.preset);
-                        }
+                        if (GUILayout.Button("Load")) myTarget.LoadModuleValues();
+                        if (GUILayout.Button("Save")) myTarget.SaveModuleValues(myTarget.preset);
                     }
-                    if(GUILayout.Button("Save As New"))
-                    {
-                        myTarget.SaveModuleValues();
-                    }
+
+                    if (GUILayout.Button("Save As New")) myTarget.SaveModuleValues();
                     GUILayout.EndHorizontal();
                 }
+
                 GUILayout.EndVertical();
                 /// Save Load End
 
-                ApplyChanges ();
+                ApplyChanges();
             }
+
             GUILayout.EndVertical();
 
-            if(myTarget.showModuleInspector)
-             GUILayout.Space(20);
+            if (myTarget.showModuleInspector)
+                GUILayout.Space(20);
         }
     }
 }

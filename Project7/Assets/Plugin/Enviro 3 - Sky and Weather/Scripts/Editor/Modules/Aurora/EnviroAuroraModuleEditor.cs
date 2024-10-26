@@ -7,12 +7,26 @@ namespace Enviro
 {
     [CustomEditor(typeof(EnviroAuroraModule))]
     public class EnviroAuroraModuleEditor : EnviroModuleEditor
-    {  
-        private EnviroAuroraModule myTarget; 
+    {
+        private EnviroAuroraModule myTarget;
 
         //Properties
-        private SerializedProperty useAurora,auroraIntensity,auroraIntensityModifier, auroraColor, auroraBrightness, auroraContrast, auroraHeight, auroraScale, auroraSteps, auroraLayer1Settings, auroraLayer2Settings, auroraColorshiftSettings, auroraSpeed,
-        aurora_layer_1, aurora_layer_2, aurora_colorshift;
+        private SerializedProperty useAurora,
+            auroraIntensity,
+            auroraIntensityModifier,
+            auroraColor,
+            auroraBrightness,
+            auroraContrast,
+            auroraHeight,
+            auroraScale,
+            auroraSteps,
+            auroraLayer1Settings,
+            auroraLayer2Settings,
+            auroraColorshiftSettings,
+            auroraSpeed,
+            aurora_layer_1,
+            aurora_layer_2,
+            aurora_colorshift;
 
 
         //On Enable
@@ -20,13 +34,13 @@ namespace Enviro
         {
             base.OnEnable();
 
-            if(!target)
+            if (!target)
                 return;
 
             myTarget = (EnviroAuroraModule)target;
             serializedObj = new SerializedObject(myTarget);
             preset = serializedObj.FindProperty("preset");
-            
+
             useAurora = serializedObj.FindProperty("Settings.useAurora");
             auroraIntensity = serializedObj.FindProperty("Settings.auroraIntensity");
             auroraIntensityModifier = serializedObj.FindProperty("Settings.auroraIntensityModifier");
@@ -43,44 +57,45 @@ namespace Enviro
             aurora_layer_1 = serializedObj.FindProperty("Settings.aurora_layer_1");
             aurora_layer_2 = serializedObj.FindProperty("Settings.aurora_layer_2");
             aurora_colorshift = serializedObj.FindProperty("Settings.aurora_colorshift");
-        } 
+        }
 
         public override void OnInspectorGUI()
         {
-            if(!target)
+            if (!target)
                 return;
-            
+
             base.OnInspectorGUI();
 
             GUI.backgroundColor = baseModuleColor;
-            GUILayout.BeginVertical("",boxStyleModified);
+            GUILayout.BeginVertical("", boxStyleModified);
             GUI.backgroundColor = Color.white;
             EditorGUILayout.BeginHorizontal();
             myTarget.showModuleInspector = GUILayout.Toggle(myTarget.showModuleInspector, "Aurora", headerFoldout);
-            
+
             GUILayout.FlexibleSpace();
-            if(GUILayout.Button("x", EditorStyles.miniButtonRight,GUILayout.Width(18), GUILayout.Height(18)))
+            if (GUILayout.Button("x", EditorStyles.miniButtonRight, GUILayout.Width(18), GUILayout.Height(18)))
             {
-                EnviroManager.instance.RemoveModule(EnviroManager.ModuleType.Aurora); //Add Remove
+                EnviroManager.instance.RemoveModule(EnviroManagerBase.ModuleType.Aurora); //Add Remove
                 DestroyImmediate(this);
-                return; 
-            }  
-            
+                return;
+            }
+
             EditorGUILayout.EndHorizontal();
-            
-            if(myTarget.showModuleInspector)
+
+            if (myTarget.showModuleInspector)
             {
                 RenderDisableInputBox();
-                serializedObj.UpdateIfRequiredOrScript ();
+                serializedObj.UpdateIfRequiredOrScript();
                 EditorGUI.BeginChangeCheck();
-                
+
                 // Set Values
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
-                myTarget.showAuroraControls = GUILayout.Toggle(myTarget.showAuroraControls, "Aurora Controls", headerFoldout);               
-                if(myTarget.showAuroraControls)
-                {  
+                myTarget.showAuroraControls =
+                    GUILayout.Toggle(myTarget.showAuroraControls, "Aurora Controls", headerFoldout);
+                if (myTarget.showAuroraControls)
+                {
                     GUILayout.Space(5);
                     DisableInputStartQuality();
                     EditorGUILayout.PropertyField(useAurora);
@@ -93,9 +108,9 @@ namespace Enviro
                     EditorGUILayout.PropertyField(auroraColor);
                     EditorGUILayout.PropertyField(auroraBrightness);
                     EditorGUILayout.PropertyField(auroraContrast);
-                    EditorGUILayout.PropertyField(auroraHeight); 
+                    EditorGUILayout.PropertyField(auroraHeight);
                     EditorGUILayout.PropertyField(auroraScale);
-                    EditorGUILayout.PropertyField(auroraSteps); 
+                    EditorGUILayout.PropertyField(auroraSteps);
                     EditorGUILayout.PropertyField(auroraLayer1Settings);
                     EditorGUILayout.PropertyField(auroraLayer2Settings);
                     EditorGUILayout.PropertyField(auroraColorshiftSettings);
@@ -105,50 +120,43 @@ namespace Enviro
                     EditorGUILayout.PropertyField(aurora_layer_2);
                     EditorGUILayout.PropertyField(aurora_colorshift);
                 }
+
                 GUILayout.EndVertical();
 
 
                 // Save Load
                 GUI.backgroundColor = categoryModuleColor;
-                GUILayout.BeginVertical("",boxStyleModified);
+                GUILayout.BeginVertical("", boxStyleModified);
                 GUI.backgroundColor = Color.white;
                 myTarget.showSaveLoad = GUILayout.Toggle(myTarget.showSaveLoad, "Save/Load", headerFoldout);
-                
-                if(myTarget.showSaveLoad)
+
+                if (myTarget.showSaveLoad)
                 {
                     EditorGUILayout.PropertyField(preset);
 
-                    GUILayout.BeginHorizontal("",wrapStyle);
+                    GUILayout.BeginHorizontal("", wrapStyle);
 
-                    if(myTarget.preset != null)
+                    if (myTarget.preset != null)
                     {
-                        if(GUILayout.Button("Load"))
-                        {
-                            myTarget.LoadModuleValues();
-                        }
-                        if(GUILayout.Button("Save"))
-                        {
-                            myTarget.SaveModuleValues(myTarget.preset);
-                        }
+                        if (GUILayout.Button("Load")) myTarget.LoadModuleValues();
+                        if (GUILayout.Button("Save")) myTarget.SaveModuleValues(myTarget.preset);
                     }
-                    if(GUILayout.Button("Save As New"))
-                    {
-                        myTarget.SaveModuleValues();
-                    }
+
+                    if (GUILayout.Button("Save As New")) myTarget.SaveModuleValues();
 
                     GUILayout.EndHorizontal();
-
-     
                 }
+
                 GUILayout.EndVertical();
                 /// Save Load End
-                
-                ApplyChanges ();
+
+                ApplyChanges();
             }
+
             GUILayout.EndVertical();
 
-            if(myTarget.showModuleInspector)
-             GUILayout.Space(20);
+            if (myTarget.showModuleInspector)
+                GUILayout.Space(20);
         }
     }
 }

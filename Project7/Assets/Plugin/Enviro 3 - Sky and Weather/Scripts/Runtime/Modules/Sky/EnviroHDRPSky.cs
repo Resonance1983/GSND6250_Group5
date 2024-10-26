@@ -1,4 +1,4 @@
-#if ENVIRO_HDRP 
+#if ENVIRO_HDRP
 using System;
 using UnityEngine.Rendering.HighDefinition;
 

@@ -20,24 +20,30 @@ namespace LostFrame
         public bool isUsingLinearDrag = true;
         [Range(0, 0.1f)] public float linearDragFactor = 0.05f;
         [Range(0, 20)] public float acceleration_walk = 8;
-        [ConditionalHide("AllowedRun",true)] [Range(0, 30)] 
+
+        [ConditionalHide("AllowedRun", true)] [Range(0, 30)]
         public float acceleration_run = 12;
+
         [Range(0, 50)] public float maxSpeed_walk = 8;
-        [ConditionalHide("AllowedRun",true)] [Range(0, 100)] 
+
+        [ConditionalHide("AllowedRun", true)] [Range(0, 100)]
         public float maxSpeed_run = 12;
 
         // Setting_Jump
         [SerializeField] private bool AllowedJump = true;
-        [SerializeField] [ConditionalHide("AllowedJump",true)]
+
+        [SerializeField] [ConditionalHide("AllowedJump", true)]
         private bool AllowedJumpTwice = true;
-        [Range(0, 100)] [ConditionalHide("AllowedJump",true)]
+
+        [Range(0, 100)] [ConditionalHide("AllowedJump", true)]
         public float acceleration_Jump = 5;
+
         private int JumpTimes = 0;
 
         // Interface external value for script
         [HideInInspector] public bool isCancelMaxSpeed = false;
         [HideInInspector] public bool isMoving = false;
-        
+
 
         private void Start()
         {
