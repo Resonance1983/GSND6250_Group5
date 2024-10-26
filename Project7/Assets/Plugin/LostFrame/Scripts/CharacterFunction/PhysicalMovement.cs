@@ -3,7 +3,7 @@
 namespace LostFrame
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class CharacterPhysicalMovement : Singleton<CharacterPhysicalMovement>
+    public class PhysicalMovement : Singleton<PhysicalMovement>
     {
         // BasicSetting
         private Rigidbody playerRb;

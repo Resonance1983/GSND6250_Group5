@@ -2,7 +2,7 @@
 
 namespace LostFrame
 {
-    public class CharacterRayCast : MonoBehaviour
+    public class RayCast : MonoBehaviour
     {
         [SerializeField] private Transform forwardTransform;
         [HideInInspector] public bool isEnabled = false;

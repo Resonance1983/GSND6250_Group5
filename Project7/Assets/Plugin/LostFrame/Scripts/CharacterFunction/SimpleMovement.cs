@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LostFrame
 {
-    public class CharacterSimpleMovement : Singleton<CharacterSimpleMovement>
+    public class SimpleMovement : Singleton<SimpleMovement>
     {
         //Setting_Basic
         public Rigidbody PlayerRb;

@@ -12,14 +12,9 @@ namespace LostFrame
         public float fadeDuration = 1.0f;
         public float waitDuration = 2.0f;
         public AnimationCurve fadeCurve;
+        
         public Text conversationText;
-        public List<string> ConversationContent = new();
-        public string transitionText;
-
-        private void Start()
-        {
-            // GameObject.Find("SceneTransition").transitionText = transitionText;
-        }
+        public List<string> ConversationContent = new List<string>();
 
         public IEnumerator showSingleText(int num)
         {
@@ -67,5 +62,12 @@ namespace LostFrame
         {
             yield return StartCoroutine(showConversation(0, ConversationContent.Count - 1));
         }
+
+        public IEnumerator showConversationWithStringList(List<string> conversation)
+        {
+            ConversationContent = conversation;
+            yield return StartCoroutine(showAllConversation());
+        }
+
     }
 }

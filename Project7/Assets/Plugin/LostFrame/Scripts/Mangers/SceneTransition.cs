@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace LostFrame
 {
-    public class SceneTransition : MonoBehaviour
+    public class SceneTransition : Singleton<SceneTransition>
     {
         // User Setting
         public float fadeDuration = 8.0f;
@@ -13,8 +13,8 @@ namespace LostFrame
         public string nextSceneName;
         // public string nextWeatherName;
 
-        [HideInInspector] public Text transitionText;
-        private Image blackScreen;
+        public Text transitionText = null;
+        private Image blackScreen = null;
 
         private void Start()
         {
@@ -98,5 +98,6 @@ namespace LostFrame
                 yield return null;
             }
         }
+        
     }
 }

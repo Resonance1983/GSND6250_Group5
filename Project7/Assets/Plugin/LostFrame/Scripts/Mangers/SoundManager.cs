@@ -13,7 +13,7 @@ namespace LostFrame
         private void Update()
         {
             // player character movement audio
-            if (playerAudioSource.gameObject.TryGetComponent<CharacterPhysicalMovement>(out var cpm))
+            if (playerAudioSource.gameObject.TryGetComponent<PhysicalMovement>(out var cpm))
                 isMoving = cpm.isMoving;
             if (isMoving)
             {
