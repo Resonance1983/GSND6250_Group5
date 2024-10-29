@@ -377,7 +377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d413849641b1d34bb5033ac57cca95f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2019966751390762875}
   cameraForwardTransform: {fileID: 8630885659941810818}
   frictionFactor: 0.5
   gravityFactor: 9.8
@@ -391,6 +390,7 @@ MonoBehaviour:
   AllowedJump: 0
   AllowedJumpTwice: 0
   acceleration_Jump: 5
+  isCancelMaxSpeed: 0
   isMoving: 0
 --- !u!114 &6257162137416893816
 MonoBehaviour:
@@ -404,9 +404,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387992b907e8e804da796f27f3750002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetCamera: {fileID: 8630885659941810818}
   xsen: 1
   ysen: 1
-  targetCamera: {fileID: 8630885659941810818}
   maxPitch: 100
   cursorTex: {fileID: 0}
 --- !u!114 &1739072641435211865
