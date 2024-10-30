@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91bd5e7d5954402e827cc938a813d3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 2
   CameraForwardTransform: {fileID: 8630885659941810818}
 --- !u!143 &7365965497123453463
 CharacterController:
