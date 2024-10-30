@@ -7,7 +7,7 @@ namespace LostFrame
     public class ConversationItem : InteractableItem
     {
         [SerializeField] private ConversationManager conversationManager;
-        [SerializeField] private SceneTransition sceneTransition;
+        // [SerializeField] private SceneTransition sceneTransition;
         
         public List<string> ConversationContent = new List<string>();
 
@@ -20,7 +20,7 @@ namespace LostFrame
         {
             yield return StartCoroutine(conversationManager.showConversationWithStringList(ConversationContent));
             yield return StartCoroutine(WaitSeconds(3));
-            yield return StartCoroutine(sceneTransition.FadeOut());
+            // yield return StartCoroutine(sceneTransition.FadeOut());
         }
 
         private IEnumerator WaitSeconds(float seconds)

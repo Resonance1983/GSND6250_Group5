@@ -144,7 +144,6 @@ GameObject:
   - component: {fileID: 4060434596472694782}
   - component: {fileID: 4351777799740769010}
   - component: {fileID: 6257162137416893816}
-  - component: {fileID: 1739072641435211865}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -409,26 +408,6 @@ MonoBehaviour:
   ysen: 1
   maxPitch: 100
   cursorTex: {fileID: 0}
---- !u!114 &1739072641435211865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7537547227932208476}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6194dc58d3474274b7d6fe6ca1180492, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerRb: {fileID: 0}
-  CameraForwardTransform: {fileID: 0}
-  AllowedRun: 1
-  WalkForce: 30
-  RunForce: 60
-  AllowedJump: 1
-  AllowedJumpInAir: 0
-  JumpForce: 60
 --- !u!1 &9099739874471535965
 GameObject:
   m_ObjectHideFlags: 0
