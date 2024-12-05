@@ -87,3 +87,4 @@ FinalProject/[Aa]ssets/[Ss]treamingAssets/aa/*
 # Private Use
 Project[12345678]/Assets/PrivatePlugins
 Project6.zip
+*.meta
