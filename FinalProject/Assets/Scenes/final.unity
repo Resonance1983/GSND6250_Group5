@@ -9478,7 +9478,7 @@ GameObject:
   - component: {fileID: 566974155}
   m_Layer: 0
   m_Name: floor_bookstore_10X10
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9843,6 +9843,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 5.82
+      objectReference: {fileID: 0}
+    - target: {fileID: -342277539940154440, guid: 4cb381663c4fb3e468a726c726891d4e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4cb381663c4fb3e468a726c726891d4e,
         type: 3}
@@ -14461,7 +14466,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 5.53, y: 14.57, z: 15.32}
   m_Center: {x: 0.66, y: 8.6, z: 0}
@@ -17797,6 +17802,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ceiling-Store
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 41a30bd490629784792ac98bd050fc5f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30739,7 +30749,7 @@ GameObject:
   - component: {fileID: 1655019696}
   m_Layer: 0
   m_Name: floor_bookstore_5X10 (2)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40707,6 +40717,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 7.05
       objectReference: {fileID: 0}
+    - target: {fileID: -342277539940154440, guid: 4cb381663c4fb3e468a726c726891d4e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4cb381663c4fb3e468a726c726891d4e,
         type: 3}
       propertyPath: m_Name
@@ -43262,19 +43277,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7123687084351501779}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6194dc58d3474274b7d6fe6ca1180492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerRb: {fileID: 0}
-  CameraForwardTransform: {fileID: 0}
-  AllowedRun: 1
-  WalkForce: 30
+  PlayerRb: {fileID: 1607373726373978100}
+  CameraForwardTransform: {fileID: 9043725212188027405}
+  AllowedRun: 0
+  WalkForce: 5
   RunForce: 60
   AllowedJump: 1
   AllowedJumpInAir: 0
-  JumpForce: 60
+  JumpForce: 30
 --- !u!1 &1370324028932029219
 GameObject:
   m_ObjectHideFlags: 0
@@ -45172,7 +45187,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7123687084351501779}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d413849641b1d34bb5033ac57cca95f, type: 3}
   m_Name: 
@@ -50106,7 +50121,7 @@ GameObject:
   - component: {fileID: 8354524173533336665}
   m_Layer: 0
   m_Name: floor_office_10X10
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
