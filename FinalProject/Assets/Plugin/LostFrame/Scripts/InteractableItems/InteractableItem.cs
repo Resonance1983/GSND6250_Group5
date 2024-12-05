@@ -9,10 +9,10 @@ namespace LostFrame
     {
         [SerializeField] private bool isNeedInteractionTips = true;
         [SerializeField] protected GameObject interactionTips = null;
-        [HideInInspector] public string tipsContent = "Press 'F' ";
+        [HideInInspector] public string tipsContent = "Press 'F'";
         [SerializeField] private KeyCode keyCode = KeyCode.F;
         private bool isCollding = false;
-        [SerializeField] private bool doOnce = false;
+        [SerializeField] private bool doOnce = true;
         private bool hasInteracted = false;
 
         private void Start()
@@ -63,7 +63,7 @@ namespace LostFrame
         {
             if (isNeedInteractionTips && other.gameObject.tag.Equals("Player") && !(doOnce && hasInteracted))
                 interactionTips.SetActive(true);
-
+            
             isCollding = true;
             print(isCollding);
             InteractableItemOnTriggerEnter(other);
