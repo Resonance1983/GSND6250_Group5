@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using LostFrame;
+using TMPro;
 using UnityEngine;
 
 public class Door : InteractableItem
@@ -17,5 +18,18 @@ public class Door : InteractableItem
         }
         
     }
-    
+
+    public override void InteractableItemOnTriggerEnter(Collider other)
+    {
+        if (!keyLocks.getKey)
+        {
+            interactionTips.GetComponent<TextMeshProUGUI>().text = "Door lugged";
+        }
+    }
+
+    public override void InteractableItemOnTriggerExit(Collider other)
+    {
+        interactionTips.GetComponent<TextMeshProUGUI>().text = "Press 'F'";
+    }
+
 }
