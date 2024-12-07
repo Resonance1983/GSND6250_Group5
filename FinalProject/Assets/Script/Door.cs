@@ -14,6 +14,7 @@ public class Door : InteractableItem
         {
             keyLocks.openDoor = true;
             gameObject.SetActive(false);
+            //GetComponent<Animation>().Play();
             
         }
         
