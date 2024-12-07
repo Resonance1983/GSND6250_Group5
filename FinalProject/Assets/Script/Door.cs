@@ -23,7 +23,7 @@ public class Door : InteractableItem
     {
         if (!keyLocks.getKey)
         {
-            interactionTips.GetComponent<TextMeshProUGUI>().text = "Door lugged";
+            interactionTips.GetComponent<TextMeshProUGUI>().text = "Door locked";
         }
     }
 
