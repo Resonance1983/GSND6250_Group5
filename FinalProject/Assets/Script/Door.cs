@@ -13,8 +13,8 @@ public class Door : InteractableItem
         if (keyLocks.getKey)
         {
             keyLocks.openDoor = true;
-            gameObject.SetActive(false);
-            //GetComponent<Animation>().Play();
+            //gameObject.SetActive(false);
+            GetComponent<Animation>().Play();
             
         }
         
